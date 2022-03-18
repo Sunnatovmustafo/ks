@@ -1,0 +1,2431 @@
+
+<!DOCTYPE html><html class="loading" dir="ltr" lang="ALL"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <base href="/">
+
+  <!-- Facebook base meta tags. -->
+  <meta property="og:image:width" content="600">
+  <meta property="og:image:height" content="600">
+  <meta property="og:site_name" content="Deepmind">
+  <meta property="og:type" content="website">
+
+  <!-- Twitter base meta tags. -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:creator" content="@DeepMindAI">
+
+  <!-- Set in Angular. -->
+  <title>AlphaZero: Shedding new light on chess, shogi, and Go | DeepMind</title>
+  <meta name="description" content="In late 2017 we introduced AlphaZero, a single system that taught itself from scratch how to master the games of chess, shogi (Japanese chess), and Go, beating a world-champion program in each case. We were excited by the preliminary results and thrilled to see the response from members of the chess community, who saw in AlphaZero’s games a ground-breaking, highly dynamic and “unconventional” style of play that differed from any chess playing engine that came before it.Today, we are delighted to introduce the full evaluation of AlphaZero, published in the journal Science&nbsp;(Open Access version here), that confirms and updates those preliminary results. It describes how AlphaZero quickly learns each game to become the strongest player in history for each, despite starting its training from random play, with no in-built domain knowledge but the basic rules of the game.">
+
+  <script type="text/javascript" nonce="3721b72cb3784aef873697b9327" src="//local.adguard.org?ts=1647592272224&amp;type=content-script&amp;dmn=deepmind.com&amp;app=chrome.exe&amp;css=1&amp;js=1&amp;gcss=1&amp;rel=1&amp;rji=1&amp;sbe=0&amp;stealth=1&amp;uag=&amp;trref=aHR0cHM6Ly9kZWVwbWluZC5jb20v"></script>
+<script type="text/javascript" nonce="3721b72cb3784aef873697b9327" src="//local.adguard.org?ts=1647592272224&amp;name=AdGuard%20Popup%20Blocker&amp;name=AdGuard%20Assistant&amp;name=AdGuard%20Extra&amp;type=user-script"></script><link rel="preconnect" href="java.js">
+  <link href="assets/favicon.ico" rel="icon">
+<link rel="stylesheet" href="style.css"><style ng-transition="deepmind-website">[_nghost-sc0] {
+  display: flex;
+  flex-direction: column;
+}
+@media (min-width: 1024px) {
+  [_nghost-sc0] {
+    flex-direction: row;
+  }
+}
+[_nghost-sc0]   .dm-body[_ngcontent-sc0] {
+  background-color: #f0f5f5;
+  height: 100%;
+  overflow-x: hidden;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  [_nghost-sc0]   .dm-body[_ngcontent-sc0] {
+    width: calc(100% - 100px);
+  }
+}
+[_nghost-sc0]   .svg-elements[_ngcontent-sc0] {
+  height: 0;
+  position: absolute;
+  visibility: hidden;
+  width: 0;
+}</style><style ng-transition="deepmind-website">[_nghost-sc2] {
+  display: block;
+  position: relative;
+}
+header[_ngcontent-sc2] {
+  background-color: #0053d6;
+  height: 60px;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  header[_ngcontent-sc2] {
+    height: 70px;
+  }
+}
+@media (min-width: 1024px) {
+  header[_ngcontent-sc2] {
+    height: 100%;
+    width: 100px;
+  }
+}
+header[_ngcontent-sc2]::after {
+  background-color: #0053d6;
+  content: "";
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: right 0.3s ease, width 0.3s ease;
+  width: 0;
+  z-index: 34;
+}
+header.is-peaking[_ngcontent-sc2]::after {
+  right: -10px;
+  width: 10px;
+}
+.header-container[_ngcontent-sc2] {
+  background-color: #0053d6;
+  display: flex;
+  flex-direction: column;
+  height: inherit;
+  justify-content: space-between;
+  left: 0;
+  padding: 0 20px;
+  position: fixed;
+  top: 0;
+  width: inherit;
+  z-index: 35;
+}
+@media (min-width: 1024px) {
+  .header-container[_ngcontent-sc2] {
+    height: 100%;
+    padding: 30px 20px;
+  }
+}
+header.is-menu-open[_ngcontent-sc2]   .header-container[_ngcontent-sc2] {
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  header.is-menu-open[_ngcontent-sc2]   .header-container[_ngcontent-sc2] {
+    width: 100px;
+  }
+}
+.header-container[_ngcontent-sc2]   ul[_ngcontent-sc2] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menu-wrapper[_ngcontent-sc2] {
+  display: flex;
+  height: 100%;
+}
+@media (min-width: 1024px) {
+  .menu-wrapper[_ngcontent-sc2] {
+    flex-direction: column;
+    height: auto;
+  }
+}
+.menu-header[_ngcontent-sc2] {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .menu-header[_ngcontent-sc2] {
+    display: block;
+  }
+}
+.menu-header[_ngcontent-sc2]   .logo[_ngcontent-sc2] {
+  display: block;
+  margin: 0 0 0 -12px;
+}
+@media (min-width: 768px) {
+  .menu-header[_ngcontent-sc2]   .logo[_ngcontent-sc2] {
+    margin: 0;
+  }
+}
+@media (min-width: 1024px) {
+  .menu-header[_ngcontent-sc2]   .logo[_ngcontent-sc2] {
+    margin: 0 0 30px;
+  }
+}
+.menu-header[_ngcontent-sc2]   .logo[_ngcontent-sc2]   svg[_ngcontent-sc2] {
+  display: block;
+  height: 40px;
+  width: 184px;
+}
+@media (min-width: 1024px) {
+  .menu-header[_ngcontent-sc2]   .logo[_ngcontent-sc2]   svg[_ngcontent-sc2] {
+    width: 40px;
+  }
+}
+.menu-header[_ngcontent-sc2]   .logo[_ngcontent-sc2]   svg.full-logo[_ngcontent-sc2] {
+  width: 184px;
+}
+.menu-header[_ngcontent-sc2]   .menu-controls[_ngcontent-sc2] {
+  align-items: center;
+  display: flex;
+  flex-direction: row-reverse;
+}
+@media (min-width: 1024px) {
+  .menu-header[_ngcontent-sc2]   .menu-controls[_ngcontent-sc2] {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    width: 38px;
+  }
+}
+.menu-header[_ngcontent-sc2]   .menu-controls[_ngcontent-sc2]   button[_ngcontent-sc2]    + button[_ngcontent-sc2] {
+  display: block;
+  margin: 0 20px 0 0;
+}
+@media (min-width: 1024px) {
+  .menu-header[_ngcontent-sc2]   .menu-controls[_ngcontent-sc2]   button[_ngcontent-sc2]    + button[_ngcontent-sc2] {
+    margin: 30px 0 0;
+  }
+}
+nav[_ngcontent-sc2] {
+  display: none;
+}
+@media (min-width: 1024px) {
+  nav[_ngcontent-sc2] {
+    display: flex;
+  }
+}
+@media (min-width: 1024px) {
+  header.is-menu-open[_ngcontent-sc2]   nav[_ngcontent-sc2] {
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+  }
+}
+.pages[_ngcontent-sc2] {
+  display: block;
+  width: 100%;
+}
+header.is-menu-open[_ngcontent-sc2]   .pages[_ngcontent-sc2] {
+  width: auto;
+}
+@media (min-width: 1024px) {
+  header.is-menu-open[_ngcontent-sc2]   .pages[_ngcontent-sc2] {
+    display: flex;
+    flex-direction: row-reverse;
+    -webkit-transform: rotateZ(-90deg);
+            transform: rotateZ(-90deg);
+  }
+}
+.pages[_ngcontent-sc2]   li[_ngcontent-sc2]   a[_ngcontent-sc2] {
+  cursor: pointer;
+  position: relative;
+}
+.pages[_ngcontent-sc2]   li[_ngcontent-sc2]   a[_ngcontent-sc2]::before {
+  border-left: 6px solid transparent;
+  content: "";
+  display: block;
+  height: 100%;
+  left: -20px;
+  position: absolute;
+  top: 0;
+}
+.pages[_ngcontent-sc2]   li[_ngcontent-sc2]   a[_ngcontent-sc2]:focus::before, .pages[_ngcontent-sc2]   li[_ngcontent-sc2]   a[_ngcontent-sc2]:hover::before {
+  border-color: #fff;
+}
+.pages[_ngcontent-sc2]   li.is-active[_ngcontent-sc2]   a[_ngcontent-sc2]::before {
+  border-color: #fff;
+}
+.page-link[_ngcontent-sc2] {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: block;
+  padding: 10px 0;
+}
+.page-link.nav-cta[_ngcontent-sc2]:focus, .page-link.nav-cta[_ngcontent-sc2]:hover {
+  color: #fff;
+}
+@media screen and (min-width: 769px) and (max-height: 615px) {
+  .page-link[_ngcontent-sc2] {
+    padding: 6px 0;
+  }
+}
+@media screen and (min-width: 769px) and (max-height: 540px) {
+  .page-link[_ngcontent-sc2] {
+    font-size: 12px;
+    padding: 4px 0;
+  }
+}
+.social-media-wrapper[_ngcontent-sc2] {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .social-media-wrapper[_ngcontent-sc2] {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    width: 38px;
+  }
+}
+.social-media-wrapper[_ngcontent-sc2]   li[_ngcontent-sc2]    + li[_ngcontent-sc2] {
+  margin-top: 10px;
+}
+.social-media-wrapper[_ngcontent-sc2]   svg[_ngcontent-sc2] {
+  height: 20px;
+  width: 20px;
+}
+.hamburger-menu[_ngcontent-sc2] {
+  cursor: pointer;
+  display: block;
+  height: 18px;
+  position: relative;
+  width: 22px;
+}
+@media (min-width: 1024px) {
+  .hamburger-menu[_ngcontent-sc2] {
+    width: 30px;
+  }
+}
+@media (hover: hover) {
+  .hamburger-menu[_ngcontent-sc2]:focus   span[_ngcontent-sc2]:nth-child(2), .hamburger-menu[_ngcontent-sc2]:hover   span[_ngcontent-sc2]:nth-child(2) {
+    -webkit-transform: scaleX(0.5);
+            transform: scaleX(0.5);
+  }
+}
+.hamburger-menu[_ngcontent-sc2]   span[_ngcontent-sc2] {
+  background-color: #fff;
+  display: block;
+  height: 2px;
+  margin: 0;
+  position: absolute;
+  -webkit-transform-origin: center;
+          transform-origin: center;
+  transition: width 0.2s ease, -webkit-transform 0.3s ease;
+  transition: transform 0.3s ease, width 0.2s ease;
+  transition: transform 0.3s ease, width 0.2s ease, -webkit-transform 0.3s ease;
+  width: 100%;
+}
+.hamburger-menu[_ngcontent-sc2]   span[_ngcontent-sc2]:first-child {
+  top: 0;
+}
+.hamburger-menu[_ngcontent-sc2]   span[_ngcontent-sc2]:nth-child(2) {
+  top: 8px;
+}
+.hamburger-menu[_ngcontent-sc2]   span[_ngcontent-sc2]:last-child {
+  bottom: 0;
+}
+.hamburger-menu.is-active[_ngcontent-sc2]   span[_ngcontent-sc2]:first-child {
+  -webkit-transform: translateY(8px) rotate(45deg);
+          transform: translateY(8px) rotate(45deg);
+  width: 23px;
+}
+@media (min-width: 1024px) {
+  .hamburger-menu.is-active[_ngcontent-sc2]   span[_ngcontent-sc2]:first-child {
+    width: 29px;
+  }
+}
+.hamburger-menu.is-active[_ngcontent-sc2]   span[_ngcontent-sc2]:nth-child(2) {
+  width: 0;
+}
+.hamburger-menu.is-active[_ngcontent-sc2]   span[_ngcontent-sc2]:last-child {
+  -webkit-transform: translateY(-8px) rotate(-45deg);
+          transform: translateY(-8px) rotate(-45deg);
+  width: 23px;
+}
+@media (min-width: 1024px) {
+  .hamburger-menu.is-active[_ngcontent-sc2]   span[_ngcontent-sc2]:last-child {
+    width: 29px;
+  }
+}
+.search[_ngcontent-sc2] {
+  text-align: center;
+}
+.search.no-focus[_ngcontent-sc2]:focus   g[_ngcontent-sc2] {
+  -webkit-transform: none;
+          transform: none;
+}
+.search[_ngcontent-sc2]:focus   g[_ngcontent-sc2], .search[_ngcontent-sc2]:hover   g[_ngcontent-sc2] {
+  -webkit-transform: scale(1.2);
+          transform: scale(1.2);
+}
+@media (hover: none) {
+  .search.no-focus[_ngcontent-sc2]:focus   g[_ngcontent-sc2] {
+    -webkit-transform: none;
+            transform: none;
+  }
+  .search.no-focus[_ngcontent-sc2]:hover   g[_ngcontent-sc2] {
+    -webkit-transform: none;
+            transform: none;
+  }
+  .search[_ngcontent-sc2]:focus   g[_ngcontent-sc2], .search[_ngcontent-sc2]:hover   g[_ngcontent-sc2] {
+    -webkit-transform: none;
+            transform: none;
+  }
+}
+.search[_ngcontent-sc2]   svg[_ngcontent-sc2] {
+  height: 22px;
+  vertical-align: middle;
+  width: 22px;
+}
+@media (min-width: 1024px) {
+  .search[_ngcontent-sc2]   svg[_ngcontent-sc2] {
+    height: 28px;
+    width: 30px;
+  }
+}
+.search[_ngcontent-sc2]   svg[_ngcontent-sc2]   g[_ngcontent-sc2] {
+  transition: -webkit-transform 0.3s ease;
+  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, -webkit-transform 0.3s ease;
+}
+.search[_ngcontent-sc2]   svg[_ngcontent-sc2]   g[_ngcontent-sc2]   [_ngcontent-sc2]:first-child {
+  fill: #0053d6;
+}
+.search-icon[_ngcontent-sc2] {
+  background-color: #0053d6;
+  display: block;
+  height: 30px;
+  position: relative;
+  width: 30px;
+}
+.search-icon[_ngcontent-sc2]:hover   .circle[_ngcontent-sc2] {
+  height: 20px;
+  width: 20px;
+}
+@media (min-width: 1024px) {
+  .search-icon[_ngcontent-sc2]:hover   .circle[_ngcontent-sc2] {
+    height: 26px;
+    width: 26px;
+  }
+}
+.search-icon[_ngcontent-sc2]   .circle[_ngcontent-sc2] {
+  background-color: #0053d6;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  height: 18px;
+  left: -4px;
+  position: relative;
+  top: 4px;
+  transition: width 0.2s ease-out, height 0.2s ease-out, -webkit-transform 0.6s cubic-bezier(0.25, 1.7, 0.35, 0.8);
+  transition: transform 0.6s cubic-bezier(0.25, 1.7, 0.35, 0.8), width 0.2s ease-out, height 0.2s ease-out;
+  transition: transform 0.6s cubic-bezier(0.25, 1.7, 0.35, 0.8), width 0.2s ease-out, height 0.2s ease-out, -webkit-transform 0.6s cubic-bezier(0.25, 1.7, 0.35, 0.8);
+  width: 18px;
+  z-index: 2;
+}
+@media (min-width: 1024px) {
+  .search-icon[_ngcontent-sc2]   .circle[_ngcontent-sc2] {
+    height: 22px;
+    left: -2px;
+    top: 0;
+    width: 22px;
+  }
+}
+.search-icon[_ngcontent-sc2]   .x-mask[_ngcontent-sc2] {
+  background-color: #0053d6;
+  height: 12px;
+  left: -2px;
+  position: absolute;
+  top: -2px;
+  transition: left 0.2s linear;
+  width: 12px;
+  z-index: 1;
+}
+.search-icon[_ngcontent-sc2]   .handle[_ngcontent-sc2] {
+  background-color: #fff;
+  float: right;
+  height: 2px;
+  left: -1px;
+  position: absolute;
+  top: 14px;
+  -webkit-transform: rotate(45deg);
+          transform: rotate(45deg);
+  width: 29px;
+}
+.search-icon[_ngcontent-sc2]   .handle[_ngcontent-sc2]::after {
+  background-color: #fff;
+  content: "";
+  float: right;
+  height: 2px;
+  transition: all 0.5s cubic-bezier(0.25, 1.7, 0.35, 0.8);
+  width: 29px;
+  z-index: -1;
+}
+@media (min-width: 1024px) {
+  .search-icon[_ngcontent-sc2]   .handle[_ngcontent-sc2] {
+    left: -4px;
+    top: 12px;
+    width: 36px;
+  }
+  .search-icon[_ngcontent-sc2]   .handle[_ngcontent-sc2]::after {
+    width: 36px;
+  }
+}
+.search-icon.open[_ngcontent-sc2]   .circle[_ngcontent-sc2] {
+  background: #fff;
+  border-color: #fff;
+  -webkit-transform: scale(0.01);
+          transform: scale(0.01);
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+.search-icon.open[_ngcontent-sc2]   .handle[_ngcontent-sc2]::after {
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+  -webkit-transform-origin: center center;
+          transform-origin: center center;
+}
+.search-icon.open[_ngcontent-sc2]   .x-mask[_ngcontent-sc2] {
+  left: -12px;
+}</style><style ng-transition="deepmind-website">[_nghost-sc3] {
+  display: block;
+}
+footer[_ngcontent-sc3] {
+  background-color: #14234b;
+  overflow: hidden;
+  padding: 50px 0 40px;
+  position: relative;
+}
+@media (min-width: 768px) {
+  footer[_ngcontent-sc3] {
+    padding: 60px 0 50px;
+  }
+}
+@media (min-width: 1440px) {
+  footer[_ngcontent-sc3] {
+    padding: 90px 0 100px;
+  }
+}
+.logo[_ngcontent-sc3] {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .logo[_ngcontent-sc3] {
+    display: block;
+    margin: 0 0 45px;
+  }
+}
+.logo[_ngcontent-sc3]   svg[_ngcontent-sc3] {
+  fill: #fff;
+  height: 28px;
+  width: 130px;
+}
+.body[_ngcontent-sc3] {
+  flex: 1 1 0%;
+  position: relative;
+}
+.categories[_ngcontent-sc3] {
+  display: flex;
+  flex-flow: row wrap;
+}
+.categories[_ngcontent-sc3]   .column[_ngcontent-sc3] {
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .categories[_ngcontent-sc3]   .column[_ngcontent-sc3] {
+    margin: 0 0 30px;
+    max-width: 33.3333333333%;
+  }
+}
+@media (min-width: 1024px) {
+  .categories[_ngcontent-sc3]   .column[_ngcontent-sc3] {
+    margin: 0 0 30px 40px;
+    max-width: 16.6666666667%;
+    width: calc(1 / 6 * 100% - 40px);
+  }
+  .categories[_ngcontent-sc3]   .column[_ngcontent-sc3]:first-child, .categories[_ngcontent-sc3]   .column[_ngcontent-sc3]:nth-child(7n) {
+    margin-left: 0;
+  }
+}
+.categories[_ngcontent-sc3]   .column[_ngcontent-sc3]:last-child {
+  flex-grow: 0;
+}
+@media (min-width: 768px) {
+  .categories[_ngcontent-sc3]   .column[_ngcontent-sc3]:last-child {
+    flex-grow: 1;
+  }
+}
+.categories[_ngcontent-sc3]   .column[_ngcontent-sc3]    > .nav-cta[_ngcontent-sc3] {
+  font-size: 16px;
+  font-weight: 700;
+}
+.categories[_ngcontent-sc3]   .column[_ngcontent-sc3]   [dmAccordionTitle][_ngcontent-sc3] {
+  flex-grow: 1;
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+}
+.categories[_ngcontent-sc3]   .column[_ngcontent-sc3]   [dmAccordionTitle][_ngcontent-sc3]:focus, .categories[_ngcontent-sc3]   .column[_ngcontent-sc3]   [dmAccordionTitle][_ngcontent-sc3]:hover {
+  border: 0;
+}
+.categories[_ngcontent-sc3]   .column[_ngcontent-sc3]   ul[_ngcontent-sc3] {
+  list-style-type: none;
+  padding: 0 0 20px;
+}
+@media (min-width: 768px) {
+  .categories[_ngcontent-sc3]   .column[_ngcontent-sc3]   ul[_ngcontent-sc3] {
+    border-left: 1px solid #0053d6;
+    margin: 15px 0 0;
+    padding: 0 0 0 8px;
+  }
+}
+.categories[_ngcontent-sc3]   .column[_ngcontent-sc3]   ul[_ngcontent-sc3]   li[_ngcontent-sc3]    + li[_ngcontent-sc3] {
+  margin: 10px 0 0;
+}
+.categories[_ngcontent-sc3]   .column[_ngcontent-sc3]   ul[_ngcontent-sc3]   li[_ngcontent-sc3]   a[_ngcontent-sc3] {
+  display: inherit;
+}
+.categories[_ngcontent-sc3]   .column[_ngcontent-sc3]   ul[_ngcontent-sc3]   li[_ngcontent-sc3]   a[_ngcontent-sc3]:focus, .categories[_ngcontent-sc3]   .column[_ngcontent-sc3]   ul[_ngcontent-sc3]   li[_ngcontent-sc3]   a[_ngcontent-sc3]:hover {
+  border: 0;
+}
+.categories[_ngcontent-sc3]   .column[_ngcontent-sc3]   ul[_ngcontent-sc3]   li[_ngcontent-sc3]   dm-link[_ngcontent-sc3] {
+  line-height: 1;
+}
+.information[_ngcontent-sc3] {
+  display: flex;
+}
+@media (min-width: 768px) {
+  .information[_ngcontent-sc3] {
+    border-top: 1px solid #5c657f;
+    padding: 25px 0;
+  }
+}
+@media (min-width: 1440px) {
+  .information[_ngcontent-sc3] {
+    padding: 35px 0;
+  }
+}
+.information[_ngcontent-sc3]   .legal[_ngcontent-sc3] {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+@media (min-width: 768px) {
+  .information[_ngcontent-sc3]   .legal[_ngcontent-sc3] {
+    align-items: center;
+    flex-direction: row;
+    margin: 0;
+  }
+}
+.information[_ngcontent-sc3]   .legal[_ngcontent-sc3]   dm-link[_ngcontent-sc3] {
+  margin: 0 0 15px;
+}
+@media (min-width: 768px) {
+  .information[_ngcontent-sc3]   .legal[_ngcontent-sc3]   dm-link[_ngcontent-sc3] {
+    margin: 0 45px 0 0;
+  }
+}
+.information[_ngcontent-sc3]   .social[_ngcontent-sc3] {
+  align-items: flex-end;
+  display: flex;
+  justify-content: flex-end;
+  list-style: none;
+}
+@media (min-width: 768px) {
+  .information[_ngcontent-sc3]   .social[_ngcontent-sc3] {
+    align-items: center;
+  }
+}
+.information[_ngcontent-sc3]   .social[_ngcontent-sc3]   li[_ngcontent-sc3] {
+  display: flex;
+}
+.information[_ngcontent-sc3]   .social[_ngcontent-sc3]   a[_ngcontent-sc3] {
+  margin: 0 0 15px;
+  padding: 0 0 0 32px;
+}
+@media (min-width: 768px) {
+  .information[_ngcontent-sc3]   .social[_ngcontent-sc3]   a[_ngcontent-sc3] {
+    margin: 0 0 0 15px;
+    padding: 0;
+  }
+}
+.information[_ngcontent-sc3]   .social[_ngcontent-sc3]   a[_ngcontent-sc3]   svg[_ngcontent-sc3] {
+  height: 20px;
+  vertical-align: middle;
+  width: 20px;
+}
+dm-shape[_ngcontent-sc3] {
+  bottom: -100px;
+  height: 500px;
+  position: absolute;
+  right: -100px;
+  width: 500px;
+}
+@media (min-width: 768px) {
+  dm-shape[_ngcontent-sc3] {
+    bottom: -200px;
+    left: 60%;
+    top: auto;
+  }
+}
+.back-to-top[_ngcontent-sc3] {
+  margin: 30px 0;
+  position: relative;
+  text-align: right;
+}
+@media (min-width: 768px) {
+  .back-to-top[_ngcontent-sc3] {
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+}
+@media (min-width: 1024px) {
+  .back-to-top[_ngcontent-sc3] {
+    display: none;
+  }
+}
+.back-to-top[_ngcontent-sc3]   svg[_ngcontent-sc3] {
+  fill: #fff;
+  height: 16px;
+  margin: 0 0 0 auto;
+  -webkit-transform: rotate(90deg);
+          transform: rotate(90deg);
+  transition: -webkit-transform 0.2s ease;
+  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, -webkit-transform 0.2s ease;
+  width: 25px;
+}
+@media (min-width: 768px) {
+  .back-to-top[_ngcontent-sc3]   svg[_ngcontent-sc3] {
+    margin: auto;
+  }
+}</style><style ng-transition="deepmind-website">[_nghost-sc9] {
+  display: block;
+  height: 256px;
+  width: 256px;
+}
+@media (min-width: 768px) {
+  [_nghost-sc9] {
+    height: 384px;
+    width: 384px;
+  }
+}
+@media (min-width: 1024px) {
+  [_nghost-sc9] {
+    height: 448px;
+    width: 448px;
+  }
+}
+@media (min-width: 1440px) {
+  [_nghost-sc9] {
+    height: 512px;
+    width: 512px;
+  }
+}</style><style ng-transition="deepmind-website">[_nghost-sc8] {
+  display: block;
+}
+.media[_ngcontent-sc8] {
+  display: block;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.link[_ngcontent-sc8]   .icon[_ngcontent-sc8] {
+  height: 30px;
+  min-width: 30px;
+  position: relative;
+  width: 30px;
+}
+.link.external[_ngcontent-sc8]:focus   .icon[_ngcontent-sc8]::before, .link.external[_ngcontent-sc8]:hover   .icon[_ngcontent-sc8]::before {
+  background-color: #0053d6;
+}
+.link.external[_ngcontent-sc8]   .icon[_ngcontent-sc8]::before {
+  background-color: #ffdb13;
+  border-radius: 50%;
+  content: "";
+  display: block;
+  height: 30px;
+  position: absolute;
+  right: 0;
+  width: 30px;
+}
+.link.external[_ngcontent-sc8]   svg[_ngcontent-sc8] {
+  background-color: transparent;
+  border-radius: 0;
+  padding: 8px;
+  position: relative;
+}
+.link.transparent[_ngcontent-sc8]   .icon[_ngcontent-sc8] {
+  line-height: 0;
+}
+.hero-link[_ngcontent-sc8] {
+  align-items: flex-start;
+  font: 500 14px/30px "Deepmind Sans", Helvetica, Arial, sans-serif;
+  letter-spacing: 0;
+}
+@media (min-width: 1024px) {
+  .hero-link[_ngcontent-sc8] {
+    font-size: 18px;
+    line-height: 30px;
+  }
+}
+.cta-text[_ngcontent-sc8] {
+  margin-right: 10px;
+  text-transform: uppercase;
+}</style><style ng-transition="deepmind-website">[_nghost-sc11] {
+  display: block;
+  position: relative;
+  width: 100%;
+}</style><meta property="og:title" content="AlphaZero: Shedding new light on the grand games of chess, shogi and Go"><meta property="og:description" content="In late 2017 we introduced AlphaZero, a single system that taught itself from scratch how to master the games of chess, shogi (Japanese chess), and Go, beating a world-champion program in each case. We were excited by the preliminary results and thrilled to see the response from members of the chess community, who saw in AlphaZero’s games a ground-breaking, highly dynamic and “unconventional” style of play that differed from any chess playing engine that came before it.Today, we are delighted to introduce the full evaluation of AlphaZero, published in the journal Science&nbsp;(Open Access version here), that confirms and updates those preliminary results. It describes how AlphaZero quickly learns each game to become the strongest player in history for each, despite starting its training from random play, with no in-built domain knowledge but the basic rules of the game."><meta property="og:image" content="https://lh3.googleusercontent.com/Uda4PNqx4XsnTbm_mF3F4MyuKSs8rASaijI_tuCA3Fuhbaxs2eCAf90uWiHwjXLFvkpFWr04ZZld3RbI-jx-akSqewm106PPOUylJA"><meta property="og:url" content="/blog/article/alphazero-shedding-new-light-grand-games-chess-shogi-and-go"><meta name="twitter:title" content="AlphaZero: Shedding new light on the grand games of chess, shogi and Go"><meta name="twitter:description" content="In late 2017 we introduced AlphaZero, a single system that taught itself from scratch how to master the games of chess, shogi (Japanese chess), and Go, beating a world-champion program in each case. We were excited by the preliminary results and thrilled to see the response from members of the chess community, who saw in AlphaZero’s games a ground-breaking, highly dynamic and “unconventional” style of play that differed from any chess playing engine that came before it.Today, we are delighted to introduce the full evaluation of AlphaZero, published in the journal Science&nbsp;(Open Access version here), that confirms and updates those preliminary results. It describes how AlphaZero quickly learns each game to become the strongest player in history for each, despite starting its training from random play, with no in-built domain knowledge but the basic rules of the game."><meta name="twitter:image:src" content="https://lh3.googleusercontent.com/Uda4PNqx4XsnTbm_mF3F4MyuKSs8rASaijI_tuCA3Fuhbaxs2eCAf90uWiHwjXLFvkpFWr04ZZld3RbI-jx-akSqewm106PPOUylJA"><meta name="twitter:site" content="/blog/article/alphazero-shedding-new-light-grand-games-chess-shogi-and-go"><style ng-transition="deepmind-website">[_nghost-sc52] {
+  display: block;
+  margin-top: 70px;
+}
+@media (min-width: 1024px) {
+  [_nghost-sc52] {
+    margin-top: 100px;
+  }
+}
+dm-breadcrumb[_ngcontent-sc52] {
+  left: 20px;
+  position: absolute;
+  top: -45px;
+}
+@media (min-width: 768px) {
+  dm-breadcrumb[_ngcontent-sc52] {
+    left: 30px;
+  }
+}
+@media (min-width: 1024px) {
+  dm-breadcrumb[_ngcontent-sc52] {
+    left: 60px;
+    margin: 40px 0 25px;
+    top: -100px;
+  }
+}
+@media (min-width: 1440px) {
+  dm-breadcrumb[_ngcontent-sc52] {
+    left: 90px;
+  }
+}
+.blog-article-bg[_ngcontent-sc52] {
+  background: linear-gradient(to right, #fff 50%, #ffe6f0 50%);
+}
+@media (min-width: 1024px) {
+  .blog-article-bg[_ngcontent-sc52] {
+    background: linear-gradient(to right, #ffe6f0 50%, #fff 50%);
+    overflow: hidden;
+  }
+}
+.page-content-container[_ngcontent-sc52] {
+  display: flex;
+  flex-direction: column-reverse;
+}
+@media (max-width: 1023px) {
+  .page-content-container[_ngcontent-sc52] {
+    padding: 0;
+  }
+}
+@media (min-width: 1024px) {
+  .page-content-container[_ngcontent-sc52] {
+    flex-direction: row;
+  }
+}
+aside[_ngcontent-sc52] {
+  background-color: #ffe6f0;
+  display: flex;
+  flex-direction: column;
+  padding: 50px 0 50px 30px;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  aside[_ngcontent-sc52] {
+    -webkit-column-gap: 0;
+       -moz-column-gap: 0;
+            column-gap: 0;
+    -webkit-columns: 2;
+       -moz-columns: 2;
+            columns: 2;
+    display: inline;
+  }
+}
+@media (min-width: 1024px) {
+  aside[_ngcontent-sc52] {
+    display: flex;
+    max-width: 260px;
+    padding: 0 40px 50px 0;
+  }
+}
+@media (min-width: 1440px) {
+  aside[_ngcontent-sc52] {
+    max-width: 300px;
+  }
+}
+.page-content[_ngcontent-sc52] {
+  background-color: #fff;
+  padding: 20px 20px 0;
+  width: calc(100% - 20px);
+}
+@media (min-width: 768px) {
+  .page-content[_ngcontent-sc52] {
+    padding: 20px 30px 0;
+    width: calc(100% - 125px);
+  }
+}
+@media (min-width: 1024px) {
+  .page-content[_ngcontent-sc52] {
+    padding: 55px 0 0 30px;
+    width: 100%;
+  }
+}
+@media (min-width: 1440px) {
+  .page-content[_ngcontent-sc52] {
+    padding: 70px 0 0 100px;
+  }
+}
+.page-content[_ngcontent-sc52]   .promos-wrapper[_ngcontent-sc52] {
+  height: 100%;
+  position: relative;
+}
+@media (min-width: 1024px) {
+  .page-content[_ngcontent-sc52]   .promos-wrapper[_ngcontent-sc52] {
+    margin: 90px 0 0 -30px;
+    width: calc(100% + 30px);
+  }
+}
+@media (min-width: 1440px) {
+  .page-content[_ngcontent-sc52]   .promos-wrapper[_ngcontent-sc52] {
+    margin-left: -100px;
+    width: calc(100% + 100px);
+  }
+}
+.page-content[_ngcontent-sc52]   .promos-wrapper[_ngcontent-sc52]   .backdrop[_ngcontent-sc52] {
+  background-color: #f0f5f5;
+  height: 100%;
+  position: absolute;
+  right: -100%;
+  top: 0;
+  width: 100%;
+}
+dm-social-share[_ngcontent-sc52], dm-authors-list[_ngcontent-sc52], dm-tag-list[_ngcontent-sc52] {
+  margin-bottom: 30px;
+}
+@media (min-width: 768px) {
+  dm-social-share[_ngcontent-sc52], dm-authors-list[_ngcontent-sc52], dm-tag-list[_ngcontent-sc52] {
+    margin: 0 20px 30px 0;
+  }
+}
+@media (min-width: 1024px) {
+  dm-social-share[_ngcontent-sc52], dm-authors-list[_ngcontent-sc52], dm-tag-list[_ngcontent-sc52] {
+    margin: 0 0 30px;
+  }
+}
+dm-authors-list[_ngcontent-sc52] {
+  margin-bottom: 30px;
+}
+@media (min-width: 768px) {
+  dm-authors-list[_ngcontent-sc52] {
+    -webkit-column-break-before: always;
+       -moz-column-break-before: always;
+            break-before: always;
+    margin: 0;
+  }
+}
+@media (min-width: 1024px) {
+  dm-authors-list[_ngcontent-sc52] {
+    -webkit-column-break-before: auto;
+       -moz-column-break-before: auto;
+            break-before: auto;
+    margin-bottom: 30px;
+  }
+}
+dm-tag-list[_ngcontent-sc52] {
+  order: 3;
+}</style><style ng-transition="deepmind-website">[_nghost-sc14] {
+  display: block;
+}
+.theme-dark[_nghost-sc14]   li[_ngcontent-sc14]   a[_ngcontent-sc14] {
+  color: #0053d6;
+}
+.theme-dark[_nghost-sc14]   .logo[_ngcontent-sc14]   svg[_ngcontent-sc14], .theme-dark[_nghost-sc14]   .arrow[_ngcontent-sc14] {
+  fill: #0053d6;
+}
+ul[_ngcontent-sc14] {
+  align-items: center;
+  display: flex;
+  list-style: none;
+}
+ul[_ngcontent-sc14]   li[_ngcontent-sc14] {
+  align-items: center;
+  display: flex;
+}
+ul[_ngcontent-sc14]   li[_ngcontent-sc14]:not(:nth-child(2)) {
+  display: none;
+}
+@media (min-width: 1024px) {
+  ul[_ngcontent-sc14]   li[_ngcontent-sc14]:not(:nth-child(2)) {
+    display: flex;
+  }
+}
+ul[_ngcontent-sc14]   li[_ngcontent-sc14]:last-child   a[_ngcontent-sc14] {
+  font-weight: bold;
+}
+ul[_ngcontent-sc14]   li[_ngcontent-sc14]   .nav-cta[_ngcontent-sc14]:focus, ul[_ngcontent-sc14]   li[_ngcontent-sc14]   .nav-cta[_ngcontent-sc14]:hover {
+  border: 0;
+}
+ul[_ngcontent-sc14]   li[_ngcontent-sc14]   .disabled[_ngcontent-sc14] {
+  cursor: default;
+  pointer-events: none;
+}
+ul[_ngcontent-sc14]   li[_ngcontent-sc14]   .disabled[_ngcontent-sc14]:focus, ul[_ngcontent-sc14]   li[_ngcontent-sc14]   .disabled[_ngcontent-sc14]:hover {
+  color: #fff;
+}
+ul[_ngcontent-sc14]   .logo[_ngcontent-sc14]   svg[_ngcontent-sc14] {
+  display: none;
+  fill: #fff;
+  height: 25px;
+  width: 110px;
+}
+@media (min-width: 1024px) {
+  ul[_ngcontent-sc14]   .logo[_ngcontent-sc14]   svg[_ngcontent-sc14] {
+    display: block;
+    height: 28px;
+    width: 130px;
+  }
+}
+ul[_ngcontent-sc14]   .arrow[_ngcontent-sc14] {
+  fill: #fff;
+  height: 9px;
+  margin: 0 25px 0 0;
+  -webkit-transform: scaleX(-1);
+          transform: scaleX(-1);
+  width: 5px;
+}
+@media (min-width: 1024px) {
+  ul[_ngcontent-sc14]   .arrow[_ngcontent-sc14] {
+    margin: 0 25px;
+    -webkit-transform: scaleX(1);
+            transform: scaleX(1);
+  }
+}
+ul[_ngcontent-sc14]   .arrow.is-last[_ngcontent-sc14] {
+  display: none;
+}
+@media (min-width: 1024px) {
+  ul[_ngcontent-sc14]   .arrow.is-last[_ngcontent-sc14] {
+    display: inline;
+  }
+}</style><style ng-transition="deepmind-website">[_nghost-sc53] {
+  display: block;
+}
+header[_ngcontent-sc53] {
+  position: relative;
+}
+header[_ngcontent-sc53]   .article-image[_ngcontent-sc53] {
+  background: linear-gradient(transparent 60%, #ffe6f0 60%);
+}
+@media (min-width: 768px) {
+  header[_ngcontent-sc53]   .article-image[_ngcontent-sc53] {
+    background: linear-gradient(transparent 30%, #ffe6f0 30%);
+  }
+}
+@media (min-width: 1024px) {
+  header[_ngcontent-sc53]   .article-image[_ngcontent-sc53] {
+    background: transparent;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    z-index: 0;
+  }
+}
+@media (min-width: 2048px) {
+  header[_ngcontent-sc53]   .article-image[_ngcontent-sc53] {
+    max-height: 820px;
+  }
+}
+@media (min-width: 1024px) {
+  header[_ngcontent-sc53]   .article-image[_ngcontent-sc53]   picture[_ngcontent-sc53] {
+    height: auto;
+    position: relative;
+    display: block;
+    margin-left: auto;
+    width: 75%;
+  }
+  header[_ngcontent-sc53]   .article-image[_ngcontent-sc53]   picture[_ngcontent-sc53]::before {
+    content: "";
+    display: block;
+    padding-top: 56.25%;
+    width: 100%;
+  }
+  header[_ngcontent-sc53]   .article-image[_ngcontent-sc53]   picture[_ngcontent-sc53]    > img[_ngcontent-sc53], header[_ngcontent-sc53]   .article-image[_ngcontent-sc53]   picture[_ngcontent-sc53]    > svg[_ngcontent-sc53], header[_ngcontent-sc53]   .article-image[_ngcontent-sc53]   picture[_ngcontent-sc53]    > path[_ngcontent-sc53] {
+    display: block;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+  }
+}
+@media (min-width: 2048px) {
+  header[_ngcontent-sc53]   .article-image[_ngcontent-sc53]   picture[_ngcontent-sc53] {
+    width: calc( 1440px - 330px + (100vw - 1440px - 100px) / 2);
+  }
+}
+header[_ngcontent-sc53]   .article-image[_ngcontent-sc53]   picture[_ngcontent-sc53]   img[_ngcontent-sc53] {
+  height: 100%;
+  max-width: none;
+  width: calc(100% - 20px);
+}
+@media (min-width: 768px) {
+  header[_ngcontent-sc53]   .article-image[_ngcontent-sc53]   picture[_ngcontent-sc53]   img[_ngcontent-sc53] {
+    width: calc(100% - 30px);
+  }
+}
+@media (min-width: 1024px) {
+  header[_ngcontent-sc53]   .article-image[_ngcontent-sc53]   picture[_ngcontent-sc53]   img[_ngcontent-sc53] {
+    width: auto;
+  }
+}
+.article-content-container[_ngcontent-sc53] {
+  align-items: flex-start;
+  background-color: #ffe6f0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+@media (min-width: 1024px) {
+  .article-content-container[_ngcontent-sc53] {
+    align-items: flex-end;
+    bottom: 0;
+    margin: 0 auto;
+    position: absolute;
+    z-index: 1;
+  }
+}
+@media (min-width: 1440px) {
+  .article-content-container[_ngcontent-sc53] {
+    padding-left: calc((100% - 1440px) / 2);
+  }
+}
+@media (min-width: 2048px) {
+  .article-content-container[_ngcontent-sc53] {
+    min-width: 745px;
+    width: calc(100% - calc( 1440px - 330px + (100vw - 1440px - 100px) / 2) + 350px);
+  }
+}
+.article-content[_ngcontent-sc53] {
+  padding: 30px 20px 25px;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .article-content[_ngcontent-sc53] {
+    padding: 25px 125px 25px 30px;
+  }
+}
+@media (min-width: 1024px) {
+  .article-content[_ngcontent-sc53] {
+    margin: 0;
+    max-width: 485px;
+    padding: 50px 50px 30px 60px;
+  }
+}
+@media (min-width: 1440px) {
+  .article-content[_ngcontent-sc53] {
+    max-width: 745px;
+    padding: 50px 50px 30px 90px;
+  }
+}
+.article-meta-container[_ngcontent-sc53] {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.article-meta-container[_ngcontent-sc53]   svg[_ngcontent-sc53] {
+  background-color: #e1144b;
+  border-radius: 50%;
+  fill: #fff;
+  height: 40px;
+  margin: 0 9px 0 0;
+  width: 40px;
+}
+.article-meta-container[_ngcontent-sc53]   .article-category-container[_ngcontent-sc53] {
+  align-items: center;
+  display: flex;
+}
+.dm-h2[_ngcontent-sc53] {
+  margin: 30px 0;
+}
+
+@media (min-width: 1024px) {
+  .article-description[_ngcontent-sc53] {
+    font-size: 36px;
+    line-height: 48px;
+  }
+}
+@media (min-width: 1440px) {
+  .article-description[_ngcontent-sc53] {
+    font-size: 55px;
+    line-height: 65px;
+  }
+}</style><style ng-transition="deepmind-website">[_nghost-sc20] {
+  display: block;
+}
+
+.social-share[_ngcontent-sc20] {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  padding-top: 15px;
+  text-align: left;
+}
+
+.social-share[_ngcontent-sc20]   p[_ngcontent-sc20] {
+  margin-bottom: 15px;
+}
+
+.social-media[_ngcontent-sc20] {
+  display: flex;
+  list-style: none;
+  padding: 0;
+}
+
+.social-media[_ngcontent-sc20]   li[_ngcontent-sc20] {
+  margin-right: 10px;
+}
+
+.social-media[_ngcontent-sc20]   li[_ngcontent-sc20]:last-child {
+  margin: 0;
+}
+
+.social-media[_ngcontent-sc20]   svg[_ngcontent-sc20] {
+  height: 30px;
+  width: 30px;
+}</style><style ng-transition="deepmind-website">[_nghost-sc48] {
+  display: block;
+}
+.authors-container[_ngcontent-sc48] {
+  border-top: 1px solid rgba(0, 0, 0, 0.2);
+  padding-top: 15px;
+  text-align: left;
+}
+.authors-container[_ngcontent-sc48]   .title[_ngcontent-sc48] {
+  margin-bottom: 15px;
+}
+.authors-list[_ngcontent-sc48] {
+  display: flex;
+  flex-flow: row wrap;
+  list-style: none;
+  padding: 0;
+}
+@media (min-width: 768px) {
+  .authors-list[_ngcontent-sc48] {
+    display: block;
+  }
+}
+.authors-list[_ngcontent-sc48]   li[_ngcontent-sc48] {
+  align-items: center;
+  display: flex;
+  flex-basis: 50%;
+  margin-bottom: 5px;
+}
+.authors-list[_ngcontent-sc48]   li[_ngcontent-sc48]   .image[_ngcontent-sc48] {
+  align-items: center;
+  background-color: #0053d6;
+  border-radius: 50%;
+  display: flex;
+  height: 50px;
+  justify-content: center;
+  margin-right: 10px;
+  min-width: 50px;
+  position: relative;
+  width: 50px;
+  z-index: 0;
+}
+.authors-list[_ngcontent-sc48]   li[_ngcontent-sc48]   .image[_ngcontent-sc48]   p[_ngcontent-sc48] {
+  color: #fff;
+  margin: 0;
+}
+li[_ngcontent-sc48]:not(.external)   .author-name[_ngcontent-sc48] {
+  border: 0;
+  position: relative;
+}
+li[_ngcontent-sc48]:not(.external)   .author-name[_ngcontent-sc48]::before {
+  background-color: #0053d6;
+  bottom: 0;
+  content: "";
+  height: 1px;
+  left: 0;
+  position: absolute;
+  right: 0;
+  -webkit-transform: scaleX(0);
+          transform: scaleX(0);
+  -webkit-transform-origin: bottom right;
+          transform-origin: bottom right;
+  transition: -webkit-transform 0.5s ease;
+  transition: transform 0.5s ease;
+  transition: transform 0.5s ease, -webkit-transform 0.5s ease;
+}
+li[_ngcontent-sc48]:not(.external)   .author-name[_ngcontent-sc48]:hover {
+  color: #0053d6;
+}
+li[_ngcontent-sc48]:not(.external)   .author-name[_ngcontent-sc48]:hover::before {
+  -webkit-transform: scaleX(1);
+          transform: scaleX(1);
+  -webkit-transform-origin: bottom left;
+          transform-origin: bottom left;
+}
+.authors-list[_ngcontent-sc48]   li.external[_ngcontent-sc48]   .image[_ngcontent-sc48] {
+  background-color: #fff;
+}
+.authors-list[_ngcontent-sc48]   li.external[_ngcontent-sc48]   .image[_ngcontent-sc48]   p[_ngcontent-sc48] {
+  color: #123693;
+  font-weight: 700;
+}
+.authors-list[_ngcontent-sc48]   li.external[_ngcontent-sc48]   .author-name[_ngcontent-sc48] {
+  color: #123693;
+}
+.authors-list[_ngcontent-sc48]   li.external[_ngcontent-sc48]   .author-name[_ngcontent-sc48]:hover {
+  color: #123693;
+}
+.footnote[_ngcontent-sc48] {
+  margin: 15px 0 0;
+}
+.footnote[_ngcontent-sc48]   small[_ngcontent-sc48]   sup[_ngcontent-sc48] {
+  top: -1px;
+}</style><style ng-transition="deepmind-website">[_nghost-sc10] {
+  display: block;
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.image[_ngcontent-sc10], .video[_ngcontent-sc10] {
+  background: center/cover no-repeat;
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: -1;
+}
+.image[_ngcontent-sc10]   img[_ngcontent-sc10], .video[_ngcontent-sc10]   video[_ngcontent-sc10] {
+  max-width: none;
+  min-height: 100%;
+  min-width: 103%;
+  position: absolute;
+  width: 100%;
+}
+@supports ((-o-object-fit: cover) or (object-fit: cover)) {
+  .image[_ngcontent-sc10]   img[_ngcontent-sc10], .video[_ngcontent-sc10]   video[_ngcontent-sc10] {
+    -o-object-fit: cover;
+       object-fit: cover;
+  }
+}
+.v-position-default[_nghost-sc10]   .image[_ngcontent-sc10]   img[_ngcontent-sc10], .v-position-top[_nghost-sc10]   .image[_ngcontent-sc10]   img[_ngcontent-sc10], .v-position-default[_nghost-sc10]   .video[_ngcontent-sc10]   video[_ngcontent-sc10], .v-position-top[_nghost-sc10]   .video[_ngcontent-sc10]   video[_ngcontent-sc10] {
+  top: 0;
+}
+.v-position-bottom[_nghost-sc10]   .image[_ngcontent-sc10]   img[_ngcontent-sc10], .v-position-bottom[_nghost-sc10]   .video[_ngcontent-sc10]   video[_ngcontent-sc10] {
+  bottom: 0;
+}
+.v-position-center[_nghost-sc10]   .image[_ngcontent-sc10]   img[_ngcontent-sc10], .v-position-center[_nghost-sc10]   .video[_ngcontent-sc10]   video[_ngcontent-sc10] {
+  top: 50%;
+  -webkit-transform: translate(0, -50%);
+          transform: translate(0, -50%);
+}
+.h-position-default[_nghost-sc10]   .image[_ngcontent-sc10]   img[_ngcontent-sc10], .h-position-left[_nghost-sc10]   .image[_ngcontent-sc10]   img[_ngcontent-sc10], .h-position-default[_nghost-sc10]   .video[_ngcontent-sc10]   video[_ngcontent-sc10], .h-position-left[_nghost-sc10]   .video[_ngcontent-sc10]   video[_ngcontent-sc10] {
+  left: 0;
+}
+.h-position-right[_nghost-sc10]   .image[_ngcontent-sc10]   img[_ngcontent-sc10], .h-position-right[_nghost-sc10]   .video[_ngcontent-sc10]   video[_ngcontent-sc10] {
+  right: 0;
+}
+.h-position-center[_nghost-sc10]   .image[_ngcontent-sc10]   img[_ngcontent-sc10], .h-position-center[_nghost-sc10]   .video[_ngcontent-sc10]   video[_ngcontent-sc10] {
+  left: 50%;
+  -webkit-transform: translate(-50%, 0);
+          transform: translate(-50%, 0);
+}
+.h-position-center.v-position-center[_nghost-sc10]   .image[_ngcontent-sc10]   img[_ngcontent-sc10], .h-position-center.v-position-center[_nghost-sc10]   .video[_ngcontent-sc10]   video[_ngcontent-sc10] {
+  left: 50%;
+  top: 50%;
+  -webkit-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+}
+dm-modal[_ngcontent-sc10] {
+  pointer-events: auto;
+}</style><style ng-transition="deepmind-website">[_nghost-sc45] {
+  display: block;
+  position: relative;
+}
+.user-content.is-homepage-intro[_ngcontent-sc45] {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  left: 0;
+  margin: 40px auto;
+  max-width: 835px;
+  right: 0;
+  text-align: center;
+}</style><style ng-transition="deepmind-website">[_nghost-sc43] {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  min-width: 280px;
+  padding: 40px 20px;
+  position: relative;
+  text-align: center;
+}
+@media (min-width: 768px) {
+  [_nghost-sc43] {
+    padding: 20px 120px;
+  }
+}
+@media (min-width: 1024px) {
+  [_nghost-sc43] {
+    padding: 20px 140px;
+  }
+}
+@media (min-width: 1440px) {
+  [_nghost-sc43] {
+    padding: 70px 40px;
+  }
+  .is-homepage[_nghost-sc43] {
+    min-height: 740px;
+  }
+}
+[colour-theme=""][_nghost-sc43] {
+  background-color: #fff;
+}
+[colour-theme=""][_nghost-sc43]   h4[_ngcontent-sc43], [colour-theme=""][_nghost-sc43]   .caption[_ngcontent-sc43] {
+  color: #123693;
+}
+[colour-theme=""][_nghost-sc43]   blockquote[_ngcontent-sc43]   svg[_ngcontent-sc43] {
+  fill: #123693;
+}
+.content-wrapper[_ngcontent-sc43] {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  position: relative;
+}
+.content-wrapper[_ngcontent-sc43]   a[_ngcontent-sc43]:focus, .content-wrapper[_ngcontent-sc43]   a[_ngcontent-sc43]:hover {
+  border: 0;
+}
+.content-wrapper[_ngcontent-sc43]   blockquote[_ngcontent-sc43] {
+  margin: 0;
+  width: 100%;
+}
+.content-wrapper[_ngcontent-sc43]   blockquote[_ngcontent-sc43]   svg[_ngcontent-sc43] {
+  height: 43px;
+  margin: 0 0 25px;
+  width: 43px;
+}
+.content-wrapper[_ngcontent-sc43]   .caption.subtitle[_ngcontent-sc43] {
+  margin: 0 0 30px;
+}
+.content-wrapper[_ngcontent-sc43]   .caption.title[_ngcontent-sc43] {
+  margin: 0;
+}
+.content-wrapper[_ngcontent-sc43]   p[_ngcontent-sc43] {
+  width: 100%;
+}
+img[_ngcontent-sc43] {
+  border-radius: 50%;
+  margin: 0 0 15px;
+  width: 50px;
+}
+@supports ((-o-object-fit: cover) or (object-fit: cover)) {
+  img[_ngcontent-sc43] {
+    height: 50px;
+    -o-object-fit: cover;
+       object-fit: cover;
+  }
+}</style><style ng-transition="deepmind-website">[_nghost-sc24] {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  z-index: 0;
+}
+.image-left[_nghost-sc24]   .content-card-body[_ngcontent-sc24], .image-right[_nghost-sc24]   .content-card-body[_ngcontent-sc24] {
+  width: 100%;
+}
+@media (min-width: 1440px) {
+  .image-left[_nghost-sc24]   .content-card-body[_ngcontent-sc24], .image-right[_nghost-sc24]   .content-card-body[_ngcontent-sc24] {
+    width: 50%;
+  }
+}
+@media (min-width: 1440px) {
+  .image-left[_nghost-sc24]   .image[_ngcontent-sc24], .image-right[_nghost-sc24]   .image[_ngcontent-sc24] {
+    height: auto;
+    max-height: none;
+    min-height: auto;
+    width: 50%;
+  }
+}
+@media (min-width: 1440px) {
+  .image-left[_nghost-sc24]   .content-card-body[_ngcontent-sc24], .image-right[_nghost-sc24]   .content-card-body[_ngcontent-sc24] {
+    width: 50%;
+  }
+}
+@media (min-width: 1440px) {
+  .image-left[_nghost-sc24] {
+    flex-direction: row;
+  }
+}
+@media (min-width: 1440px) {
+  .image-right[_nghost-sc24] {
+    flex-direction: row-reverse;
+  }
+}
+.list-view[_nghost-sc24]   .content-card-body[_ngcontent-sc24] {
+  align-items: end;
+  padding: 20px 0;
+}
+@media (min-width: 768px) {
+  .list-view[_nghost-sc24]   .content-card-body[_ngcontent-sc24] {
+    flex-direction: row;
+    justify-content: space-between;
+    padding-right: 20px;
+  }
+}
+.content-card-body[_ngcontent-sc24] {
+  align-items: inherit;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  justify-content: inherit;
+  padding: 20px;
+}
+@media (min-width: 1024px) {
+  .content-card-body[_ngcontent-sc24] {
+    padding: 25px;
+  }
+}
+.content-card-body.has-border[_ngcontent-sc24] {
+  position: relative;
+}
+.content-card-body.has-border[_ngcontent-sc24]::before {
+  background-color: #d8d8d8;
+  bottom: 0;
+  content: "";
+  height: 1px;
+  left: 20px;
+  position: absolute;
+  width: calc(100% - 40px);
+}
+@media (min-width: 1024px) {
+  .content-card-body.has-border[_ngcontent-sc24]::before {
+    left: 25px;
+    width: calc(100% - 50px);
+  }
+}
+.image[_ngcontent-sc24] {
+  height: auto;
+  position: relative;
+  display: block;
+  min-height: 200px;
+  position: relative;
+  width: 100%;
+}
+.image[_ngcontent-sc24]::before {
+  content: "";
+  display: block;
+  padding-top: 56.25%;
+  width: 100%;
+}
+.image[_ngcontent-sc24]    > img[_ngcontent-sc24], .image[_ngcontent-sc24]    > svg[_ngcontent-sc24], .image[_ngcontent-sc24]    > path[_ngcontent-sc24] {
+  display: block;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.backdrop-link[_ngcontent-sc24] {
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}</style><style ng-transition="deepmind-website">[_nghost-sc21] {
+  display: block;
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+.overflow[_nghost-sc21] {
+  overflow: visible;
+}
+.hide-on-mobile[_nghost-sc21] {
+  display: none;
+}
+@media (min-width: 768px) {
+  .hide-on-mobile[_nghost-sc21] {
+    display: block;
+  }
+}
+.top-left[_ngcontent-sc21] {
+  left: -160px;
+  position: absolute;
+  top: -160px;
+}
+@media (min-width: 768px) {
+  .top-left[_ngcontent-sc21] {
+    left: -150px;
+    top: -150px;
+  }
+}
+@media (min-width: 1024px) {
+  .top-left[_ngcontent-sc21] {
+    left: -175px;
+    top: -175px;
+  }
+}
+@media (min-width: 1440px) {
+  .top-left[_ngcontent-sc21] {
+    left: -200px;
+    top: -200px;
+  }
+}
+.top-right[_ngcontent-sc21] {
+  position: absolute;
+  right: -160px;
+  top: -160px;
+}
+@media (min-width: 768px) {
+  .top-right[_ngcontent-sc21] {
+    right: -150px;
+    top: -150px;
+  }
+}
+@media (min-width: 1024px) {
+  .top-right[_ngcontent-sc21] {
+    right: -175px;
+    top: -175px;
+  }
+}
+@media (min-width: 1440px) {
+  .top-right[_ngcontent-sc21] {
+    right: -200px;
+    top: -200px;
+  }
+}
+.bottom-right[_ngcontent-sc21] {
+  bottom: -160px;
+  position: absolute;
+  right: -160px;
+}
+@media (min-width: 768px) {
+  .bottom-right[_ngcontent-sc21] {
+    bottom: -150px;
+    right: -150px;
+  }
+}
+@media (min-width: 1024px) {
+  .bottom-right[_ngcontent-sc21] {
+    bottom: -175px;
+    right: -175px;
+  }
+}
+@media (min-width: 1440px) {
+  .bottom-right[_ngcontent-sc21] {
+    bottom: -200px;
+    right: -200px;
+  }
+}
+.bottom-left[_ngcontent-sc21] {
+  bottom: -160px;
+  left: -160px;
+  position: absolute;
+}
+@media (min-width: 768px) {
+  .bottom-left[_ngcontent-sc21] {
+    bottom: -150px;
+    left: -150px;
+  }
+}
+@media (min-width: 1024px) {
+  .bottom-left[_ngcontent-sc21] {
+    bottom: -175px;
+    left: -175px;
+  }
+}
+@media (min-width: 1440px) {
+  .bottom-left[_ngcontent-sc21] {
+    bottom: -200px;
+    left: -200px;
+  }
+}</style><style ng-transition="deepmind-website">[_nghost-sc44] {
+  display: block;
+}
+dm-two-up   [_nghost-sc44], dm-three-up   [_nghost-sc44] {
+  margin: 30px 0;
+}
+.inner[_ngcontent-sc44] {
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 100%;
+  z-index: 0;
+}
+@media (min-width: 768px) {
+  .inner[_ngcontent-sc44] {
+    flex-direction: row;
+  }
+}
+@media (min-width: 1440px) {
+  .inner[_ngcontent-sc44] {
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+.is-homepage[_nghost-sc44]   .inner[_ngcontent-sc44] {
+  margin: 0 0 40px;
+}
+.video-player-active[_nghost-sc44]   .inner[_ngcontent-sc44] {
+  z-index: 40;
+}
+.inner[_ngcontent-sc44]   .dm-h3[_ngcontent-sc44], .inner[_ngcontent-sc44]   span[_ngcontent-sc44] {
+  text-align: center;
+}
+.video-wrapper[_ngcontent-sc44] {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.video-container[_ngcontent-sc44] {
+  height: auto;
+  position: relative;
+  display: flex;
+  width: 100%;
+}
+.video-container[_ngcontent-sc44]::before {
+  content: "";
+  display: block;
+  padding-top: 56.25%;
+  width: 100%;
+}
+.video-container[_ngcontent-sc44]    > img[_ngcontent-sc44], .video-container[_ngcontent-sc44]    > svg[_ngcontent-sc44], .video-container[_ngcontent-sc44]    > path[_ngcontent-sc44] {
+  display: block;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.play[_ngcontent-sc44] {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+button.icon-play[_ngcontent-sc44] {
+  background-color: #ffdb13;
+  border: 0;
+  position: absolute;
+  z-index: 1;
+}
+button.icon-play[_ngcontent-sc44]   svg[_ngcontent-sc44] {
+  fill: #0053d6;
+  height: 50px;
+  padding: 15px 13px 15px 19px;
+  width: 50px;
+}
+@media (min-width: 1440px) {
+  button.icon-play[_ngcontent-sc44]   svg[_ngcontent-sc44] {
+    height: 75px;
+    padding: 25px 23px 25px 29px;
+    width: 75px;
+  }
+}
+dm-two-up   [_nghost-sc44]   button.icon-play[_ngcontent-sc44]   svg[_ngcontent-sc44], dm-three-up   [_nghost-sc44]   button.icon-play[_ngcontent-sc44]   svg[_ngcontent-sc44] {
+  height: 50px;
+  padding: 15px 13px 15px 19px;
+  width: 50px;
+}
+button.icon-play[_ngcontent-sc44]:focus, button.icon-play[_ngcontent-sc44]:hover {
+  background-color: #0053d6;
+}
+button.icon-play[_ngcontent-sc44]:focus   svg[_ngcontent-sc44], button.icon-play[_ngcontent-sc44]:hover   svg[_ngcontent-sc44] {
+  fill: #fff;
+}
+.video-copy[_ngcontent-sc44] {
+  padding: 30px 50px;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .video-copy[_ngcontent-sc44] {
+    bottom: 0;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+  }
+}
+dm-two-up   [_nghost-sc44]   .video-copy[_ngcontent-sc44], dm-three-up   [_nghost-sc44]   .video-copy[_ngcontent-sc44] {
+  position: relative;
+}
+.read-time[_ngcontent-sc44] {
+  display: flex;
+  justify-content: center;
+}
+.read-time[_ngcontent-sc44]   svg.clock[_ngcontent-sc44] {
+  height: 17px;
+  margin-right: 8px;
+  width: 17px;
+}
+.video-caption[_ngcontent-sc44] {
+  color: #6c727a;
+  margin: 17px 0 0;
+}</style><style ng-transition="deepmind-website">.image-container[_ngcontent-sc49] {
+  display: block;
+  margin: 30px 0;
+  position: relative;
+  width: 100%;
+}
+.image-container.full-width[_ngcontent-sc49] {
+  margin: 30px 0 30px -30px;
+  width: calc(100% + 80px);
+}
+@media (min-width: 768px) {
+  .image-container.full-width[_ngcontent-sc49] {
+    width: calc(100% + 215px);
+  }
+}
+@media (min-width: 1024px) {
+  .image-container.full-width[_ngcontent-sc49] {
+    margin: 30px 0 30px calc((312px + 100px) * -1);
+    width: calc(100% + 312px + 100px);
+  }
+}
+@media (min-width: 2048px) {
+  .image-container.full-width[_ngcontent-sc49] {
+    margin: 30px 0 30px calc((100vw - 775px) / -2);
+    width: calc(1440px + ((100vw - 1440px) / 2));
+  }
+}
+img[_ngcontent-sc49] {
+  left: 0;
+  position: relative;
+  width: 100%;
+}
+figcaption[_ngcontent-sc49] {
+  color: #6c727a;
+  margin: 17px 0 0;
+}</style><style ng-transition="deepmind-website">[_nghost-sc19] {
+  background-color: #f0f5f5;
+  display: block;
+  height: 100%;
+  padding: 45px 0 20px;
+}
+@media (min-width: 768px) {
+  [_nghost-sc19] {
+    padding: 65px 0 60px;
+  }
+}
+@media (min-width: 1440px) {
+  [_nghost-sc19] {
+    padding: 100px 0;
+  }
+}
+.footer-promos[_ngcontent-sc19] {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+@media (min-width: 1440px) {
+  .footer-promos.is-case-study[_ngcontent-sc19] {
+    flex-direction: row;
+  }
+}
+@media (min-width: 1440px) {
+  .footer-promos.is-case-study[_ngcontent-sc19]   .dm-h5[_ngcontent-sc19] {
+    min-width: 325px;
+  }
+}
+@media (min-width: 2048px) {
+  .footer-promos.is-case-study[_ngcontent-sc19]   .dm-h5[_ngcontent-sc19] {
+    min-width: 375px;
+  }
+}
+.footer-promos.is-content-page[_ngcontent-sc19] {
+  flex-direction: column;
+  padding: 0 40px 0 100px;
+}
+@media (min-width: 1440px) {
+  .footer-promos.is-content-page[_ngcontent-sc19] {
+    padding: 0 0 0 100px;
+  }
+}
+.footer-promos.is-content-page[_ngcontent-sc19]   .dm-h5[_ngcontent-sc19] {
+  left: 0;
+  position: relative;
+}
+.footer-promos.is-content-page[_ngcontent-sc19]   .promo-wrapper[_ngcontent-sc19] {
+  padding-left: 0;
+}
+@media (min-width: 768px) {
+  .footer-promos.is-content-page[_ngcontent-sc19]   .footer-promo[_ngcontent-sc19] {
+    max-width: 100%;
+    width: 100%;
+  }
+}
+@media (min-width: 1440px) {
+  .footer-promos.is-content-page[_ngcontent-sc19]   .footer-promo[_ngcontent-sc19] {
+    max-width: calc(50% - 15px);
+    width: calc(50% - 15px);
+  }
+}
+@media (min-width: 768px) {
+  .footer-promos.is-content-page[_ngcontent-sc19]   .footer-promo[_ngcontent-sc19]:nth-child(2n) {
+    margin: 0 0 30px;
+  }
+}
+@media (min-width: 1440px) {
+  .footer-promos.is-content-page[_ngcontent-sc19]   .footer-promo[_ngcontent-sc19]:nth-child(2n) {
+    margin: 0 0 30px 30px;
+  }
+}
+.footer-promos[_ngcontent-sc19]   .dm-h5[_ngcontent-sc19] {
+  margin: 0 0 45px;
+  min-width: 100%;
+}
+@media (min-width: 768px) {
+  .footer-promos[_ngcontent-sc19]   .dm-h5[_ngcontent-sc19] {
+    margin: 0 0 45px;
+  }
+}
+@media (min-width: 1440px) {
+  .footer-promos[_ngcontent-sc19]   .dm-h5[_ngcontent-sc19] {
+    left: 90px;
+    position: absolute;
+    top: 0;
+  }
+}
+.promo-wrapper[_ngcontent-sc19] {
+  display: flex;
+  flex-flow: row wrap;
+  width: 100%;
+}
+@media (min-width: 1440px) {
+  .promo-wrapper[_ngcontent-sc19] {
+    padding-left: 460px;
+  }
+}
+.promo-wrapper[_ngcontent-sc19]   .footer-promo[_ngcontent-sc19] {
+  flex-grow: 1;
+  margin: 0 0 30px;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .promo-wrapper[_ngcontent-sc19]   .footer-promo[_ngcontent-sc19] {
+    max-width: calc(50% - 15px);
+    width: calc(50% - 15px);
+  }
+}
+@media (min-width: 768px) {
+  .promo-wrapper[_ngcontent-sc19]   .footer-promo[_ngcontent-sc19]:nth-child(2n) {
+    margin: 0 0 30px 30px;
+  }
+}
+.promo-wrapper[_ngcontent-sc19]   dm-component-factory[_ngcontent-sc19] {
+  height: 100%;
+}</style><style ng-transition="deepmind-website">[_nghost-sc41] {
+  display: flex;
+  position: relative;
+}
+.promo-wrapper   [_nghost-sc41] {
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+.promo-wrapper   [_nghost-sc41]   dm-content-card[_ngcontent-sc41] {
+  height: 100%;
+  max-width: none;
+}
+dm-site-page   [_nghost-sc41] {
+  align-items: center;
+  background-color: #d4ffed;
+  height: 100%;
+  justify-content: center;
+  margin: 0 -20px;
+  padding: 20px;
+}
+dm-site-page   [_nghost-sc41]   dm-content-card[_ngcontent-sc41], dm-site-page   .featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41] {
+  background-color: #fff;
+  min-height: 355px;
+}
+dm-site-page   [_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .header[_ngcontent-sc41]   svg[_ngcontent-sc41], dm-site-page   .featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .header[_ngcontent-sc41]   svg[_ngcontent-sc41] {
+  background-color: #d4ffed;
+}
+dm-site-page   [_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .has-note[_ngcontent-sc41]   .triangle[_ngcontent-sc41], dm-site-page   .featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .has-note[_ngcontent-sc41]   .triangle[_ngcontent-sc41] {
+  border-color: #d4ffed #d4ffed #a6ffe0 #a6ffe0;
+}
+@media (min-width: 768px) {
+  dm-site-page   [_nghost-sc41] {
+    margin: 0;
+    padding: 30px;
+  }
+  dm-site-page   [_nghost-sc41]   dm-content-card[_ngcontent-sc41] {
+    max-width: 320px;
+  }
+}
+@media (min-width: 1440px) {
+  dm-site-page   [_nghost-sc41] {
+    padding: 40px;
+  }
+}
+.featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41] {
+  background-color: #d4ffed;
+}
+.featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .header[_ngcontent-sc41]   svg[_ngcontent-sc41] {
+  background-color: #fff;
+}
+.featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .has-note[_ngcontent-sc41]   .triangle[_ngcontent-sc41] {
+  border-color: #f0f5f5 #f0f5f5 #fff #fff;
+}
+aside   .featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .has-note[_ngcontent-sc41]   .triangle[_ngcontent-sc41] {
+  border-color: #33e0c8 #33e0c8 #fff #fff;
+}
+[_nghost-sc41]   .backdrop-offset[_ngcontent-sc41] {
+  background-color: #fff;
+  bottom: 0;
+  height: 100%;
+  position: absolute;
+  right: -20px;
+  width: 100vw;
+  z-index: -1;
+}
+@media (min-width: 1024px) {
+  [_nghost-sc41]   .backdrop-offset[_ngcontent-sc41] {
+    right: 0;
+  }
+}
+[_nghost-sc41]   dm-content-card[_ngcontent-sc41] {
+  background-color: #fff;
+  min-height: 350px;
+}
+.list-view[_nghost-sc41]   dm-content-card[_ngcontent-sc41] {
+  background-color: #fff;
+  min-height: auto;
+}
+.list-view[_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .footer[_ngcontent-sc41] {
+  padding: 20px 0 0;
+}
+@media (min-width: 768px) {
+  .list-view[_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .footer[_ngcontent-sc41] {
+    padding: 4px 0 0;
+  }
+}
+.list-view[_nghost-sc41]   dm-content-card[_ngcontent-sc41]:hover, .list-view[_nghost-sc41]   dm-content-card[_ngcontent-sc41]:hover   .backdrop-offset[_ngcontent-sc41] {
+  background-color: #f0f5f5;
+}
+.list-view.featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41], .list-view.featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .backdrop-offset[_ngcontent-sc41] {
+  background-color: #d4ffed;
+}
+.list-view.featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41]:hover, .list-view.featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41]:hover   .backdrop-offset[_ngcontent-sc41], .list-view.featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .backdrop-offset[_ngcontent-sc41]:hover, .list-view.featured[_nghost-sc41]   dm-content-card[_ngcontent-sc41]   .backdrop-offset[_ngcontent-sc41]:hover   .backdrop-offset[_ngcontent-sc41] {
+  background-color: #f0f5f5;
+}
+.caption[_ngcontent-sc41] {
+  margin: 0;
+}
+.header[_ngcontent-sc41] {
+  display: flex;
+  margin-bottom: 22px;
+}
+.header[_ngcontent-sc41]   svg[_ngcontent-sc41] {
+  background-color: #d4ffed;
+  border-radius: 50%;
+  fill: #0053d6;
+  height: 40px;
+  margin: 0 9px 0 0;
+  min-width: 40px;
+  width: 40px;
+}
+.header[_ngcontent-sc41]   .category[_ngcontent-sc41] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+.header[_ngcontent-sc41]   .category[_ngcontent-sc41]   .note[_ngcontent-sc41] {
+  width: 80%;
+}
+.list-view[_ngcontent-sc41]   .header[_ngcontent-sc41] {
+  flex: 1;
+  max-width: 90%;
+}
+.list-view[_ngcontent-sc41]   .header[_ngcontent-sc41]   .category[_ngcontent-sc41] {
+  justify-content: flex-start;
+}
+.body[_ngcontent-sc41]   h4[_ngcontent-sc41] {
+  margin: 0 0 10px;
+}
+.list-view[_ngcontent-sc41]   .body[_ngcontent-sc41] {
+  flex: 2;
+}
+.list-view[_ngcontent-sc41]   .body[_ngcontent-sc41]   .dm-h4[_ngcontent-sc41] {
+  font: 600 20px/26px "Deepmind Sans", Helvetica, Arial, sans-serif;
+}
+.footer[_ngcontent-sc41] {
+  display: flex;
+  margin: auto 0 0;
+  padding: 25px 0 0;
+}
+.footer[_ngcontent-sc41]   .info[_ngcontent-sc41]   svg[_ngcontent-sc41], .footer[_ngcontent-sc41]   .read-more[_ngcontent-sc41]   svg[_ngcontent-sc41] {
+  height: 30px;
+  width: 30px;
+}
+.footer[_ngcontent-sc41]   .icon-open-source[_ngcontent-sc41] {
+  padding: 0;
+}
+.footer[_ngcontent-sc41]   .dm-cta[_ngcontent-sc41] {
+  margin: 0 10px 0 0;
+}
+.footer[_ngcontent-sc41]   .dm-cta.icon[_ngcontent-sc41]    > svg[_ngcontent-sc41] {
+  height: 28px;
+  width: 28px;
+}
+.footer[_ngcontent-sc41]   .dm-cta.note[_ngcontent-sc41]    > svg[_ngcontent-sc41] {
+  padding: 8px 6px 6px 8px;
+}
+.footer[_ngcontent-sc41]   .dm-cta[_ngcontent-sc41]:last-child {
+  left: 0;
+  margin: 0 0 0 auto;
+}
+.list-view[_ngcontent-sc41]   .footer[_ngcontent-sc41] {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.list-view[_ngcontent-sc41]   .footer[_ngcontent-sc41]   .dm-cta[_ngcontent-sc41] {
+  display: none;
+  height: 28px;
+  margin-left: 0;
+  width: 28px;
+}
+.list-view[_ngcontent-sc41]   .footer[_ngcontent-sc41]   .dm-cta.link[_ngcontent-sc41] {
+  display: inline-flex;
+  height: 30px;
+  width: 30px;
+}
+.list-view[_ngcontent-sc41]   .footer[_ngcontent-sc41]   .dm-cta.pill.thin[_ngcontent-sc41] {
+  padding: 6px 7px;
+}
+.list-view[_ngcontent-sc41]   .footer[_ngcontent-sc41]   .dm-cta.pill.thin[_ngcontent-sc41]   svg[_ngcontent-sc41] {
+  margin: 0;
+}
+@media (min-width: 768px) {
+  .list-view[_ngcontent-sc41]   .footer[_ngcontent-sc41] {
+    flex: 1;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+}
+@media (min-width: 1024px) {
+  .list-view[_ngcontent-sc41]   .footer[_ngcontent-sc41]   .dm-cta[_ngcontent-sc41] {
+    display: inline-flex;
+  }
+}
+.has-note[_ngcontent-sc41] {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.has-note[_ngcontent-sc41]   svg[_ngcontent-sc41] {
+  bottom: 10px;
+  fill: #0053d6;
+  height: 14px;
+  left: 10px;
+  position: absolute;
+  width: 14px;
+}
+.has-note[_ngcontent-sc41]   .triangle[_ngcontent-sc41] {
+  border-color: #f0f5f5 #f0f5f5 #a6ffe0 #a6ffe0;
+  border-style: solid;
+  border-width: 29px;
+  height: 58px;
+  width: 58px;
+}</style><style ng-transition="deepmind-website">[_nghost-sc40] {
+  background-color: #14234b;
+  display: block;
+  position: relative;
+}
+dm-site-page   [_nghost-sc40] {
+  align-items: center;
+  background-color: #d4ffed;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  margin: 0 -20px;
+  padding: 20px;
+}
+dm-site-page   [_nghost-sc40]   dm-content-card[_ngcontent-sc40] {
+  background-color: #14234b;
+  min-height: 355px;
+}
+dm-site-page   [_nghost-sc40]   dm-content-card[_ngcontent-sc40]   .header[_ngcontent-sc40]   svg[_ngcontent-sc40] {
+  background-color: #fff;
+}
+@media (min-width: 768px) {
+  dm-site-page   [_nghost-sc40] {
+    margin: 0;
+    padding: 30px;
+  }
+  dm-site-page   [_nghost-sc40]   dm-content-card[_ngcontent-sc40] {
+    max-width: 320px;
+  }
+}
+@media (min-width: 1440px) {
+  dm-site-page   [_nghost-sc40] {
+    padding: 40px;
+  }
+}
+[_nghost-sc40]   .backdrop-offset[_ngcontent-sc40] {
+  background-color: #fff;
+  bottom: 0;
+  height: 100%;
+  position: absolute;
+  right: -20px;
+  width: 100vw;
+  z-index: -1;
+}
+@media (min-width: 1024px) {
+  [_nghost-sc40]   .backdrop-offset[_ngcontent-sc40] {
+    right: 0;
+  }
+}
+.list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40] {
+  background-color: #fff;
+  min-height: auto;
+}
+.list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]   .header[_ngcontent-sc40]   svg[_ngcontent-sc40] {
+  background-color: #123693;
+  fill: #fff;
+}
+.list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]   .dm-h4-mono[_ngcontent-sc40] {
+  font-size: 20px;
+  line-height: 26px;
+}
+.list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]   p[_ngcontent-sc40] {
+  color: #123693;
+}
+.list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]   a[_ngcontent-sc40] {
+  color: #0053d6;
+}
+.list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]   .footer[_ngcontent-sc40] {
+  padding: 20px 0 0;
+}
+@media (min-width: 768px) {
+  .list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]   .footer[_ngcontent-sc40] {
+    padding: 4px 0 0;
+  }
+}
+.list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]:hover, .list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]:hover   .backdrop-offset[_ngcontent-sc40] {
+  background-color: #14234b;
+  height: calc(100% - 2px);
+}
+.list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]:hover   .header[_ngcontent-sc40]   svg[_ngcontent-sc40], .list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]:hover   .backdrop-offset[_ngcontent-sc40]   .header[_ngcontent-sc40]   svg[_ngcontent-sc40] {
+  background-color: #d4ffed;
+  fill: #0053d6;
+}
+.list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]:hover   .header[_ngcontent-sc40]   svg[_ngcontent-sc40], .list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]:hover   .backdrop-offset[_ngcontent-sc40]   .header[_ngcontent-sc40]   svg[_ngcontent-sc40] {
+  background-color: #d4ffed;
+  fill: #0053d6;
+}
+.list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]:hover   a[_ngcontent-sc40], .list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]:hover   p[_ngcontent-sc40], .list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]:hover   .backdrop-offset[_ngcontent-sc40]   a[_ngcontent-sc40], .list-view[_nghost-sc40]   dm-content-card[_ngcontent-sc40]:hover   .backdrop-offset[_ngcontent-sc40]   p[_ngcontent-sc40] {
+  color: #fff;
+}
+@media (min-width: 1440px) {
+  dm-content-card[_ngcontent-sc40] {
+    min-height: 350px;
+  }
+}
+.caption[_ngcontent-sc40] {
+  margin: 0;
+}
+.header[_ngcontent-sc40] {
+  display: flex;
+  margin-bottom: 22px;
+}
+.header[_ngcontent-sc40]   svg[_ngcontent-sc40] {
+  background-color: #d4ffed;
+  border-radius: 50%;
+  fill: #0053d6;
+  height: 40px;
+  margin: 0 9px 0 0;
+  width: 40px;
+}
+.header[_ngcontent-sc40]   .category[_ngcontent-sc40] {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.list-view[_ngcontent-sc40]   .header[_ngcontent-sc40] {
+  flex: 1;
+  max-width: 90%;
+}
+.list-view[_ngcontent-sc40]   .header[_ngcontent-sc40]   .category[_ngcontent-sc40] {
+  justify-content: flex-start;
+}
+.body[_ngcontent-sc40] {
+  margin-bottom: 30px;
+}
+.body[_ngcontent-sc40]    > h4[_ngcontent-sc40] {
+  margin: 0 0 10px;
+}
+.list-view[_ngcontent-sc40]   .body[_ngcontent-sc40] {
+  flex: 2;
+  margin: 0;
+}
+.footer[_ngcontent-sc40] {
+  display: flex;
+}
+@media (min-width: 1440px) {
+  .footer[_ngcontent-sc40] {
+    margin: auto 0 0;
+  }
+}
+.footer[_ngcontent-sc40]   .read-more[_ngcontent-sc40]   svg[_ngcontent-sc40] {
+  height: 30px;
+  width: 30px;
+}
+.footer[_ngcontent-sc40]   .dm-cta[_ngcontent-sc40] {
+  margin: 0 10px 0 0;
+}
+.footer[_ngcontent-sc40]   .dm-cta[_ngcontent-sc40]:last-child {
+  left: 0;
+  margin: 0 0 0 auto;
+}
+.list-view[_ngcontent-sc40]   .footer[_ngcontent-sc40] {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.list-view[_ngcontent-sc40]   .footer[_ngcontent-sc40]   .dm-cta[_ngcontent-sc40] {
+  margin-left: 0;
+}
+.list-view[_ngcontent-sc40]   .footer[_ngcontent-sc40]   .dm-cta.pill.thin[_ngcontent-sc40] {
+  padding: 6px 7px;
+}
+.list-view[_ngcontent-sc40]   .footer[_ngcontent-sc40]   .dm-cta.pill.thin[_ngcontent-sc40]   svg[_ngcontent-sc40] {
+  margin: 0;
+}
+@media (min-width: 768px) {
+  .list-view[_ngcontent-sc40]   .footer[_ngcontent-sc40] {
+    flex: 1;
+    justify-content: flex-end;
+    margin: 0;
+    padding: 0;
+    position: relative;
+  }
+}</style></head>
+<body>
+  <script data-gtm-id="GTM-MWTBMKX" src="https://www.gstatic.com/brandstudio/kato/google_tag_manager_component/google_tag_manager_component.js">
+  </script>
+  <noscript>
+    <iframe class="gtm-iframe"
+            height="0"
+            src="https://www.googletagmanager.com/ns.html?id=GTM-MWTBMKX"
+            width="0">
+    </iframe>
+  </noscript>
+
+  <script src="https://www.gstatic.com/brandstudio/kato/cookie_choice_component/cookie_consent_bar.v2.js">
+  </script>
+
+  <dm-app-root _nghost-sc0="" ng-version="8.0.0"><!----><dm-header _ngcontent-sc0="" _nghost-sc2="" class="ng-tns-c2-0"><!----><!----><header _ngcontent-sc2="" class="ng-tns-c2-0 ng-star-inserted"><div _ngcontent-sc2="" class="header-container"><div _ngcontent-sc2="" class="menu-wrapper"><div _ngcontent-sc2="" class="menu-header"><a _ngcontent-sc2="" class="nav-cta logo" aria-label="Home page" routerlink="/" href="/"><!----><svg _ngcontent-sc2="" class="full-logo ng-tns-c2-0 ng-star-inserted" role="img"><use _ngcontent-sc2="" class="ng-tns-c2-0" xlink:href="#deepmind-logo"></use></svg><!----></a><div _ngcontent-sc2="" class="menu-controls"><button _ngcontent-sc2="" class="nav-cta hamburger-menu" aria-label="Toggle menu" aria-pressed="true" role="button"><span _ngcontent-sc2="" class="ng-tns-c2-0"></span><span _ngcontent-sc2="" class="ng-tns-c2-0"></span><span _ngcontent-sc2="" class="ng-tns-c2-0"></span></button><button _ngcontent-sc2="" class="nav-cta search" aria-label="Search publications" aria-pressed="true" role="button"><span _ngcontent-sc2="" class="search-icon"><span _ngcontent-sc2="" class="circle"></span><span _ngcontent-sc2="" class="x-mask"></span><span _ngcontent-sc2="" class="handle"></span></span></button></div></div><!----><nav _ngcontent-sc2="" class="ng-tns-c2-0 ng-star-inserted"><ul _ngcontent-sc2="" class="pages"><!----><!----><!----><li _ngcontent-sc2="" class="ng-tns-c2-0 ng-star-inserted"><a _ngcontent-sc2="" class="nav-cta page-link" href="/about"> About </a></li><!----><!----><!----><!----><li _ngcontent-sc2="" class="ng-tns-c2-0 ng-star-inserted"><a _ngcontent-sc2="" class="nav-cta page-link" href="/research"> Research </a></li><!----><!----><!----><!----><li _ngcontent-sc2="" class="ng-tns-c2-0 ng-star-inserted"><a _ngcontent-sc2="" class="nav-cta page-link" href="/impact"> Impact </a></li><!----><!----><!----><!----><li _ngcontent-sc2="" class="ng-tns-c2-0 ng-star-inserted"><a _ngcontent-sc2="" class="nav-cta page-link" href="/blog"> Blog </a></li><!----><!----><!----><!----><li _ngcontent-sc2="" class="ng-tns-c2-0 ng-star-inserted"><a _ngcontent-sc2="" class="nav-cta page-link" href="/safety-and-ethics"> Safety &amp; Ethics </a></li><!----><!----><!----><!----><li _ngcontent-sc2="" class="ng-tns-c2-0 ng-star-inserted"><a _ngcontent-sc2="" class="nav-cta page-link" href="/careers"> Careers </a></li><!----><!----></ul></nav></div><!----></div></header><!----><!----><!----></dm-header><div _ngcontent-sc0="" class="dm-body"><router-outlet _ngcontent-sc0=""></router-outlet><dm-page-loader class="ng-star-inserted"><dm-component-factory _nghost-sc11=""><!----><dm-blog-article-page _nghost-sc52="" id="" class="ng-star-inserted"><!----><!----><div _ngcontent-sc52="" class="dm-section ng-star-inserted"><dm-breadcrumb _ngcontent-sc52="" _nghost-sc14="" class="theme-dark"><!----><ul _ngcontent-sc14="" class="ng-star-inserted"><!----><li _ngcontent-sc14="" class="ng-star-inserted"><!----><a _ngcontent-sc14="" class="nav-cta logo ng-star-inserted" href="/"><svg _ngcontent-sc14="" role="img"><use _ngcontent-sc14="" xlink:href="#deepmind-logo-text"></use></svg></a><!----></li><li _ngcontent-sc14="" class="ng-star-inserted"><!----><a _ngcontent-sc14="" class="nav-cta ng-star-inserted" tab-index="0" href="/blog"><svg _ngcontent-sc14="" class="arrow" role="img"><use _ngcontent-sc14="" xlink:href="#breadcrumb-arrow"></use></svg> Blog </a><!----></li><li _ngcontent-sc14="" class="ng-star-inserted"><!----><a _ngcontent-sc14="" class="nav-cta disabled ng-star-inserted" tab-index="-1" href="/blog/article/alphazero-shedding-new-light-grand-games-chess-shogi-and-go"><svg _ngcontent-sc14="" class="arrow is-last" role="img"><use _ngcontent-sc14="" xlink:href="#breadcrumb-arrow"></use></svg> AlphaZero: Shedding new light on chess, shogi, and Go </a><!----></li></ul></dm-breadcrumb></div><dm-blog-article-hero _ngcontent-sc52="" _nghost-sc53="" class="ng-star-inserted"><header _ngcontent-sc53=""><!----><div _ngcontent-sc53="" class="article-image ng-star-inserted"><picture _ngcontent-sc53=""><source _ngcontent-sc53="" type="image/webp" srcset="https://lh3.googleusercontent.com/Uda4PNqx4XsnTbm_mF3F4MyuKSs8rASaijI_tuCA3Fuhbaxs2eCAf90uWiHwjXLFvkpFWr04ZZld3RbI-jx-akSqewm106PPOUylJA=w1440-rw-v1 1x,https://lh3.googleusercontent.com/Uda4PNqx4XsnTbm_mF3F4MyuKSs8rASaijI_tuCA3Fuhbaxs2eCAf90uWiHwjXLFvkpFWr04ZZld3RbI-jx-akSqewm106PPOUylJA=w2048-rw-v1 2x"><source _ngcontent-sc53="" type="image/jpg" srcset="https://lh3.googleusercontent.com/Uda4PNqx4XsnTbm_mF3F4MyuKSs8rASaijI_tuCA3Fuhbaxs2eCAf90uWiHwjXLFvkpFWr04ZZld3RbI-jx-akSqewm106PPOUylJA=w1440 1x,https://lh3.googleusercontent.com/Uda4PNqx4XsnTbm_mF3F4MyuKSs8rASaijI_tuCA3Fuhbaxs2eCAf90uWiHwjXLFvkpFWr04ZZld3RbI-jx-akSqewm106PPOUylJA=w2048 2x"><img _ngcontent-sc53="" alt="" srcset="https://lh3.googleusercontent.com/Uda4PNqx4XsnTbm_mF3F4MyuKSs8rASaijI_tuCA3Fuhbaxs2eCAf90uWiHwjXLFvkpFWr04ZZld3RbI-jx-akSqewm106PPOUylJA=w2048 2x" src="https://lh3.googleusercontent.com/Uda4PNqx4XsnTbm_mF3F4MyuKSs8rASaijI_tuCA3Fuhbaxs2eCAf90uWiHwjXLFvkpFWr04ZZld3RbI-jx-akSqewm106PPOUylJA=w1440"></picture></div><div _ngcontent-sc53="" class="article-content-container"><div _ngcontent-sc53="" class="article-content"><div _ngcontent-sc53="" class="article-meta-container"><div _ngcontent-sc53="" class="article-category-container"><svg _ngcontent-sc53="" role="img"><use _ngcontent-sc53="" xlink:href="#article"></use></svg><div _ngcontent-sc53="" class="category"><p _ngcontent-sc53="" class="caption title">Blog post</p><!----><p _ngcontent-sc53="" class="caption ng-star-inserted"> Research </p></div></div><p _ngcontent-sc53="" class="caption mono date">06 Dec 2018</p></div><h2 _ngcontent-sc53="" class="dm-h2 article-description">AlphaZero: Shedding new light on chess, shogi, and Go</h2></div></div></header></dm-blog-article-hero><div _ngcontent-sc52="" class="blog-article-bg ng-star-inserted"><div _ngcontent-sc52="" class="page-content-container dm-section"><aside _ngcontent-sc52=""><dm-social-share _ngcontent-sc52="" _nghost-sc20=""><!----><!----><div _ngcontent-sc20="" class="social-share ng-star-inserted"><p _ngcontent-sc20="" class="caption title"></p><ul _ngcontent-sc20="" class="social-media"><!----><li _ngcontent-sc20="" class="ng-star-inserted"><!----><a _ngcontent-sc20="" class="dm-cta icon ng-star-inserted" target="_blank"><svg _ngcontent-sc20="" role="img"><use _ngcontent-sc20=""></use></svg></a></li><li _ngcontent-sc20="" class="ng-star-inserted"><!----></li><li _ngcontent-sc20="" class="ng-star-inserted"><!----></li></ul></div></dm-social-share><!----><!----><dm-authors-list _ngcontent-sc52="" _nghost-sc48="" class="ng-star-inserted"><address _ngcontent-sc48="" class="authors-container"><p _ngcontent-sc48="" class="caption title">Authors</p><ul _ngcontent-sc48="" class="authors-list"><!----><li _ngcontent-sc48="" class="ng-star-inserted"><div _ngcontent-sc48="" class="image" style="overflow:visible;"><!----><p _ngcontent-sc48="" class="ng-star-inserted"><small _ngcontent-sc48="">DS</small></p><!----></div><!----><a _ngcontent-sc48="" alt="More articles" class="author-name small ng-star-inserted" routerlink="/research" href="/research?filters_and=%7B%22authors%22:%5B%224797883299135488%22%5D%7D"> David Silver <!----></a><!----></li><li _ngcontent-sc48="" class="ng-star-inserted"><div _ngcontent-sc48="" class="image" style="overflow:visible;"><!----><p _ngcontent-sc48="" class="ng-star-inserted"><small _ngcontent-sc48="">TH</small></p><!----></div><!----><a _ngcontent-sc48="" alt="More articles" class="author-name small ng-star-inserted" routerlink="/research" href="/research?filters_and=%7B%22authors%22:%5B%226205258182688768%22%5D%7D"> Thomas Hubert <!----></a><!----></li><li _ngcontent-sc48="" class="ng-star-inserted"><div _ngcontent-sc48="" class="image" style="overflow:visible;"><!----><p _ngcontent-sc48="" class="ng-star-inserted"><small _ngcontent-sc48="">JS</small></p><!----></div><!----><a _ngcontent-sc48="" alt="More articles" class="author-name small ng-star-inserted" routerlink="/research" href="/research?filters_and=%7B%22authors%22:%5B%225880124192325632%22%5D%7D"> Julian Schrittwieser <!----></a><!----></li><li _ngcontent-sc48="" class="ng-star-inserted"><div _ngcontent-sc48="" class="image" style="overflow:hidden;"><!----><dm-media _ngcontent-sc48="" _nghost-sc10="" class="h-position-default v-position-default ng-star-inserted"><!----><!----><div _ngcontent-sc10="" class="image ng-star-inserted" style="background-image:url('https://lh3.googleusercontent.com/8ETbUboo2CQXzAGQqpefxkLQRa2ImcKS2-zZhPJ1Up5njXNHgxnpXEzXQ0EafqtacFZbmDABEKQdvF46NR2HcITRqGjSMzC4d-I0J_SVuVqZe9RL8nU=w2048');background-position:default default;"><!----><!----><!----></div><!----><!----><!----><div _ngcontent-sc10="" class="video ng-star-inserted"><!----></div><!----><!----></dm-media><!----></div><!----><a _ngcontent-sc48="" alt="More articles" class="author-name small ng-star-inserted" routerlink="/research" href="/research?filters_and=%7B%22authors%22:%5B%224838830510702592%22%5D%7D"> Demis Hassabis <!----></a><!----></li></ul><!----></address></dm-authors-list></aside><div _ngcontent-sc52="" class="page-content"><!----><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content"><div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text">
+<p class="stand-first"><strong>In late 2017 we <a href="https://arxiv.org/abs/1712.01815">introduced AlphaZero</a>, a single system that taught itself from scratch how to master the games of chess, <a href="https://en.wikipedia.org/wiki/Shogi">shogi</a> (Japanese chess), and <a href="https://en.wikipedia.org/wiki/Go_(game)">Go</a>, beating a world-champion program in each case. We were excited by the preliminary results and thrilled to see the response from members of the chess community, who saw in AlphaZero’s games a ground-breaking, highly dynamic and “<a href="https://www.ft.com/content/ea707a24-f6b7-11e7-8715-e94187b3017e">unconventional</a>” style of play that differed from any chess playing engine that came before it.</strong></p>
+<p>Today, we are delighted to introduce the full evaluation of AlphaZero, <a href="http://science.sciencemag.org/cgi/content/full/362/6419/1140?ijkey=XGd77kI6W4rSc&amp;keytype=ref&amp;siteid=sci">published in the journal Science</a>&nbsp;(<a href="https://kstatic.googleusercontent.com/files/2f51b2a749a284c2e2dfa13911da965f4855092a179469aedd15fbe4efe8f8cbf9c515ef83ac03a6515fa990e6f85fd827dcd477845e806f23a17845072dc7bd">Open Access version here</a>), that confirms and updates those preliminary results. It describes how AlphaZero quickly learns each game to become the strongest player in history for each, despite starting its training from random play, with no in-built domain knowledge but the basic rules of the game.</p>
+</div>
+</div></div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-quote-promo _nghost-sc43="" class="ng-tns-c43-1 ng-trigger ng-trigger-animateIn ng-animate-disabled ng-star-inserted" id="" colour-theme="" style="transform:translateX(0px);opacity:0;"><dm-content-card _ngcontent-sc43="" class="" _nghost-sc24=""><!----><!----><!----><!----><div _ngcontent-sc24="" class="content-card-body"><div _ngcontent-sc43="" class="content-wrapper ng-tns-c43-1"><blockquote _ngcontent-sc43="" class="ng-tns-c43-1"><svg _ngcontent-sc43="" class="ng-tns-c43-1" role="img"><use _ngcontent-sc43="" class="ng-tns-c43-1" xlink:href="#open-quote"></use></svg><!----><h4 _ngcontent-sc43="" class="dm-h4 ng-tns-c43-1 ng-star-inserted" style="">I can’t disguise my satisfaction that it plays with a very dynamic style, much like my own!"</h4><!----></blockquote><!----><!----><!----><!----><p _ngcontent-sc43="" class="caption title ng-tns-c43-1 ng-star-inserted" style="">Garry Kasparov</p><!----><p _ngcontent-sc43="" class="caption subtitle ng-tns-c43-1 ng-star-inserted" style="">former World Chess Champion</p><!----><!----><!----><!----></div><!----></div></dm-content-card><dm-multiple-shapes _ngcontent-sc43="" class="ng-tns-c43-1 overflow hide-on-mobile" _nghost-sc21=""><!----><!----><!----><!----></dm-multiple-shapes></dm-quote-promo><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content">
+
+<div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text"><p>This ability to learn each game afresh, unconstrained by the norms of human play, results in a distinctive, unorthodox, yet creative and dynamic playing style. Chess Grandmaster Matthew Sadler and Women’s International Master Natasha Regan, who have analysed thousands of AlphaZero’s chess games for <a href="https://www.newinchess.com/game-changer">their forthcoming book Game Changer</a> (New in Chess, January 2019), say its style is unlike any traditional chess engine.” It’s like discovering the secret notebooks of some great player from the past,” says Matthew.<br></p></div>
+</div>
+
+</div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-hero-video _nghost-sc44="" class="ng-tns-c44-2 ng-trigger ng-trigger-animateIn ng-star-inserted" id="" style="transform:translateX(0px);opacity:0;"><div _ngcontent-sc44="" class="inner" colour-theme="ink_dark"><div _ngcontent-sc44="" class="video-wrapper"><div _ngcontent-sc44="" class="video-container"><div _ngcontent-sc44="" class="play"><button _ngcontent-sc44="" class="dm-cta icon icon-play" aria-label="Play video" role="button"><svg _ngcontent-sc44="" class="ng-tns-c44-2" role="img"><use _ngcontent-sc44="" class="ng-tns-c44-2" xlink:href="#play"></use></svg></button></div><dm-media _ngcontent-sc44="" class="h-position-default v-position-default" _nghost-sc10=""><!----><!----><div _ngcontent-sc10="" class="image ng-star-inserted" style="background-image: url('https://lh3.googleusercontent.com/FY4oFkxRzlUJC6HEz-BdME-VBL1bwMDh15cr5yycCiROsQGXncWXqScwXl0QXladlfJ1nvS-ZVGKU8G81yJVv8ZeqlBagFKuFqSYT3c=w2048');"><!----><!----><!----></div><!----><!----><!----><div _ngcontent-sc10="" class="video ng-star-inserted" style=""><!----></div><!----><!----></dm-media></div><div _ngcontent-sc44="" class="video-copy"><h3 _ngcontent-sc44="" class="dm-h3">AlphaZero: Player and potential</h3><!----></div></div></div><!----></dm-hero-video><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content"><div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text">
+<p>Traditional chess engines &nbsp;– including the world computer chess champion <a href="https://en.wikipedia.org/wiki/Stockfish_(chess)">Stockfish</a> and <a href="https://www.ibm.com/ibm/history/ibm100/us/en/icons/deepblue/">IBM’s ground-breaking Deep Blue</a> – rely on thousands of rules and heuristics handcrafted by strong human players that try to account for every eventuality in a game. Shogi programs are also game specific, using similar search engines and algorithms to chess programs.</p>
+<p>AlphaZero takes a totally different approach, replacing these hand-crafted rules with a deep <a href="https://en.wikipedia.org/wiki/Artificial_neural_network">neural network</a>&nbsp;and general purpose algorithms that know nothing about the game beyond the basic rules.</p>
+<p></p>
+</div>
+</div></div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-image-gallery _nghost-sc49="" id="" class="ng-star-inserted" colour-theme=""><!----><!----><div _ngcontent-sc49="" class="image-container ng-star-inserted"><!----><figure _ngcontent-sc49="" class="ng-star-inserted"><!----><picture _ngcontent-sc49="" class="ng-star-inserted"><source _ngcontent-sc49="" type="image/webp" srcset="https://lh3.googleusercontent.com/kFsqNQX_cQ2bLof_G_2UKCuSwDT34PcZpC8nNHDwaiGFteedmYbJODRnUXz8t_zdCemoWPAX_JxtkjfFHdBKhf819GDxiruo4HYYug=w1440-rw-v1 1x,https://lh3.googleusercontent.com/kFsqNQX_cQ2bLof_G_2UKCuSwDT34PcZpC8nNHDwaiGFteedmYbJODRnUXz8t_zdCemoWPAX_JxtkjfFHdBKhf819GDxiruo4HYYug=w2048-rw-v1 2x"><source _ngcontent-sc49="" type="image/jpg" srcset="https://lh3.googleusercontent.com/kFsqNQX_cQ2bLof_G_2UKCuSwDT34PcZpC8nNHDwaiGFteedmYbJODRnUXz8t_zdCemoWPAX_JxtkjfFHdBKhf819GDxiruo4HYYug=w1440 1x,https://lh3.googleusercontent.com/kFsqNQX_cQ2bLof_G_2UKCuSwDT34PcZpC8nNHDwaiGFteedmYbJODRnUXz8t_zdCemoWPAX_JxtkjfFHdBKhf819GDxiruo4HYYug=w2048 2x"><img _ngcontent-sc49="" alt="" srcset="https://lh3.googleusercontent.com/kFsqNQX_cQ2bLof_G_2UKCuSwDT34PcZpC8nNHDwaiGFteedmYbJODRnUXz8t_zdCemoWPAX_JxtkjfFHdBKhf819GDxiruo4HYYug=w2048 2x" src="https://lh3.googleusercontent.com/kFsqNQX_cQ2bLof_G_2UKCuSwDT34PcZpC8nNHDwaiGFteedmYbJODRnUXz8t_zdCemoWPAX_JxtkjfFHdBKhf819GDxiruo4HYYug=w1440"></picture><!----><figcaption _ngcontent-sc49="" class="caption condensed">In chess, AlphaZero first outperformed Stockfish after just 4 hours; in shogi, AlphaZero first outperformed Elmo after 2 hours; and in Go, AlphaZero first outperformed the version of AlphaGo that beat the legendary player Lee Sedol in 2016 after 30 hours.  Note: each training step represents 4,096 board positions.</figcaption></figure></div><!----></dm-image-gallery><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content">
+
+<div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text"><p>To learn each game, an untrained neural network plays millions of games against itself via a process of trial and error called <a href="https://en.wikipedia.org/wiki/Reinforcement_learning">reinforcement learning</a>. At first, it plays completely randomly, but over time the system learns from wins, losses, and draws to adjust the parameters of the neural network, making it more likely to choose advantageous moves in the future. The amount of training the network needs depends on the style and complexity of the game, taking approximately 9 hours for chess, 12 hours for shogi, and 13 days for Go.</p></div>
+</div>
+
+</div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-quote-promo _nghost-sc43="" class="ng-tns-c43-3 ng-trigger ng-trigger-animateIn ng-animate-disabled ng-star-inserted" id="" colour-theme="" style="transform:translateX(0px);opacity:0;"><dm-content-card _ngcontent-sc43="" class="" _nghost-sc24=""><!----><!----><!----><!----><div _ngcontent-sc24="" class="content-card-body"><div _ngcontent-sc43="" class="content-wrapper ng-tns-c43-3"><blockquote _ngcontent-sc43="" class="ng-tns-c43-3"><svg _ngcontent-sc43="" class="ng-tns-c43-3" role="img"><use _ngcontent-sc43="" class="ng-tns-c43-3" xlink:href="#open-quote"></use></svg><!----><h4 _ngcontent-sc43="" class="dm-h4 ng-tns-c43-3 ng-star-inserted" style="">Some of its moves, such as moving the King to the centre of the board, go against shogi theory and - from a human perspective - seem to put AlphaZero in a perilous position. But incredibly it remains in control of the board. Its unique playing style shows us that there are new possibilities for the game."</h4><!----></blockquote><!----><!----><!----><!----><p _ngcontent-sc43="" class="caption title ng-tns-c43-3 ng-star-inserted" style="">Yoshiharu Habu</p><!----><p _ngcontent-sc43="" class="caption subtitle ng-tns-c43-3 ng-star-inserted" style="">9-dan professional, only player in history to hold all seven major shogi titles</p><!----><!----><!----><!----></div><!----></div></dm-content-card><dm-multiple-shapes _ngcontent-sc43="" class="ng-tns-c43-3 overflow hide-on-mobile" _nghost-sc21=""><!----><!----><!----><!----></dm-multiple-shapes></dm-quote-promo><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content">
+
+<div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text"><p>The trained network is used to guide a search algorithm – known as Monte-Carlo Tree Search (MCTS) – to select the most promising moves in games. For each move, AlphaZero searches only a small fraction of the positions considered by traditional chess engines. In Chess, for example, it searches only 60 thousand positions per second in chess, compared to roughly 60 million for Stockfish.</p></div>
+</div>
+
+</div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-image-gallery _nghost-sc49="" id="" class="ng-star-inserted" colour-theme=""><!----><!----><div _ngcontent-sc49="" class="image-container ng-star-inserted"><!----><figure _ngcontent-sc49="" class="ng-star-inserted"><!----><picture _ngcontent-sc49="" class="ng-star-inserted"><source _ngcontent-sc49="" type="image/webp" srcset="https://lh3.googleusercontent.com/fH046CiV5rLPsWZvOrg8bQFq3RA-iT7Qgr01IgZzuoAb2XbDXDxH7WrQ4-48g7pmd0i4KWMQdH-U3yxIVzR6ZK_-p7YkJCt6cGKq=w1440-rw-v1 1x,https://lh3.googleusercontent.com/fH046CiV5rLPsWZvOrg8bQFq3RA-iT7Qgr01IgZzuoAb2XbDXDxH7WrQ4-48g7pmd0i4KWMQdH-U3yxIVzR6ZK_-p7YkJCt6cGKq=w2048-rw-v1 2x"><source _ngcontent-sc49="" type="image/jpg" srcset="https://lh3.googleusercontent.com/fH046CiV5rLPsWZvOrg8bQFq3RA-iT7Qgr01IgZzuoAb2XbDXDxH7WrQ4-48g7pmd0i4KWMQdH-U3yxIVzR6ZK_-p7YkJCt6cGKq=w1440 1x,https://lh3.googleusercontent.com/fH046CiV5rLPsWZvOrg8bQFq3RA-iT7Qgr01IgZzuoAb2XbDXDxH7WrQ4-48g7pmd0i4KWMQdH-U3yxIVzR6ZK_-p7YkJCt6cGKq=w2048 2x"><img _ngcontent-sc49="" alt="" srcset="https://lh3.googleusercontent.com/fH046CiV5rLPsWZvOrg8bQFq3RA-iT7Qgr01IgZzuoAb2XbDXDxH7WrQ4-48g7pmd0i4KWMQdH-U3yxIVzR6ZK_-p7YkJCt6cGKq=w2048 2x" src="https://lh3.googleusercontent.com/fH046CiV5rLPsWZvOrg8bQFq3RA-iT7Qgr01IgZzuoAb2XbDXDxH7WrQ4-48g7pmd0i4KWMQdH-U3yxIVzR6ZK_-p7YkJCt6cGKq=w1440"></picture><!----><figcaption _ngcontent-sc49="" class="caption condensed"></figcaption></figure></div><!----></dm-image-gallery><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content"><div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text">
+<p>The fully trained systems were tested against the strongest hand-crafted engines for chess (<a href="https://en.wikipedia.org/wiki/Stockfish_(chess)">Stockfish</a>) and shogi (<a href="https://en.wikipedia.org/wiki/Elmo_(shogi_engine)">Elmo</a>), along with our previous self-taught system <a href="https://deepmind.com/blog/article/alphago-zero-starting-scratch">AlphaGo Zero</a>, the strongest Go player known.</p>
+<ul>
+<li>Each program ran on the hardware for which they were designed. Stockfish and Elmo used 44 CPU cores (as in the <a href="https://en.wikipedia.org/wiki/Top_Chess_Engine_Championship">TCEC world championship</a>), whereas AlphaZero and AlphaGo Zero used a single machine with 4 first-generation <a href="https://cloud.google.com/tpu/docs/tpus">TPUs</a> and 44 <a href="https://en.wikipedia.org/wiki/Central_processing_unit">CPU</a> cores. A first generation TPU is roughly similar in inference speed to commodity hardware such as an <a href="https://www.nvidia.com/en-gb/titan/titan-v/">NVIDIA Titan V GPU</a>, although the architectures are not directly comparable.</li>
+<li>All matches were played using time controls of three hours per game, plus an additional 15 seconds for each move.</li>
+</ul>
+</div>
+</div></div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content"><div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text">
+<p>In each evaluation, AlphaZero convincingly beat its opponent:</p>
+<ul>
+<li>In chess, AlphaZero defeated the&nbsp;<a href="https://www.chessbomb.com/arena/-/2016-tcec9">2016 TCEC (Season 9)</a>&nbsp;world champion&nbsp;<a href="https://stockfishchess.org/">Stockfish</a>, winning 155 games and losing just six games out of 1,000. To verify the robustness of AlphaZero, we also played a series of matches that started from common human openings. In each opening, AlphaZero defeated Stockfish. We also played a match that started from the set of opening positions used in the 2016 TCEC world championship, along with a series of additional matches against the most recent development version of Stockfish, and a variant of Stockfish that uses a strong opening book. In all matches, AlphaZero won.</li>
+<li>In shogi, AlphaZero defeated the&nbsp;<a href="http://www2.computer-shogi.org/wcsc27/index_e.html">2017 CSA world champion version of Elmo</a>, winning 91.2% of games.</li>
+<li>In Go, AlphaZero defeated&nbsp;<a href="../../../../../../../blog/article/alphago-zero-learning-scratch">AlphaGo Zero</a>, winning 61% of games.</li>
+</ul>
+</div>
+</div></div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-image-gallery _nghost-sc49="" id="" class="ng-star-inserted" colour-theme=""><!----><!----><div _ngcontent-sc49="" class="image-container ng-star-inserted"><!----><figure _ngcontent-sc49="" class="ng-star-inserted"><!----><picture _ngcontent-sc49="" class="ng-star-inserted"><source _ngcontent-sc49="" type="image/webp" srcset="https://lh3.googleusercontent.com/hMRWFDtSbNPVhyhwoq6TRUtM8DvgufUqlkdkEtvaQtMrBkszWSG3z9fKp3Bngwc5Nm8xyW6CiiyBg8kmceLgUazvynFFiNy64Csb=w1440-rw-v1 1x,https://lh3.googleusercontent.com/hMRWFDtSbNPVhyhwoq6TRUtM8DvgufUqlkdkEtvaQtMrBkszWSG3z9fKp3Bngwc5Nm8xyW6CiiyBg8kmceLgUazvynFFiNy64Csb=w2048-rw-v1 2x"><source _ngcontent-sc49="" type="image/jpg" srcset="https://lh3.googleusercontent.com/hMRWFDtSbNPVhyhwoq6TRUtM8DvgufUqlkdkEtvaQtMrBkszWSG3z9fKp3Bngwc5Nm8xyW6CiiyBg8kmceLgUazvynFFiNy64Csb=w1440 1x,https://lh3.googleusercontent.com/hMRWFDtSbNPVhyhwoq6TRUtM8DvgufUqlkdkEtvaQtMrBkszWSG3z9fKp3Bngwc5Nm8xyW6CiiyBg8kmceLgUazvynFFiNy64Csb=w2048 2x"><img _ngcontent-sc49="" alt="" srcset="https://lh3.googleusercontent.com/hMRWFDtSbNPVhyhwoq6TRUtM8DvgufUqlkdkEtvaQtMrBkszWSG3z9fKp3Bngwc5Nm8xyW6CiiyBg8kmceLgUazvynFFiNy64Csb=w2048 2x" src="https://lh3.googleusercontent.com/hMRWFDtSbNPVhyhwoq6TRUtM8DvgufUqlkdkEtvaQtMrBkszWSG3z9fKp3Bngwc5Nm8xyW6CiiyBg8kmceLgUazvynFFiNy64Csb=w1440"></picture><!----><figcaption _ngcontent-sc49="" class="caption condensed"></figcaption></figure></div><!----></dm-image-gallery><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content">
+
+<div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text"><p>However, it was the style in which AlphaZero plays these games that players may find most fascinating. In Chess, for example, AlphaZero independently discovered and played common human motifs during its self-play training such as openings, king safety and pawn structure. But, being self-taught and therefore unconstrained by conventional wisdom about the game, it also developed its own intuitions and strategies adding a new and expansive set of exciting and novel ideas that augment centuries of thinking about chess strategy.</p></div>
+</div>
+
+</div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-quote-promo _nghost-sc43="" class="ng-tns-c43-4 ng-trigger ng-trigger-animateIn ng-animate-disabled ng-star-inserted" id="" colour-theme="" style="transform:translateX(0px);opacity:0;"><dm-content-card _ngcontent-sc43="" class="" _nghost-sc24=""><!----><!----><!----><!----><div _ngcontent-sc24="" class="content-card-body"><div _ngcontent-sc43="" class="content-wrapper ng-tns-c43-4"><blockquote _ngcontent-sc43="" class="ng-tns-c43-4"><svg _ngcontent-sc43="" class="ng-tns-c43-4" role="img"><use _ngcontent-sc43="" class="ng-tns-c43-4" xlink:href="#open-quote"></use></svg><!----><h4 _ngcontent-sc43="" class="dm-h4 ng-tns-c43-4 ng-star-inserted" style="">Chess has been used as a Rosetta Stone of both human and machine cognition for over a century. AlphaZero renews the remarkable connection between an ancient board game and cutting-edge science by doing something extraordinary."</h4><!----></blockquote><!----><!----><!----><!----><p _ngcontent-sc43="" class="caption title ng-tns-c43-4 ng-star-inserted" style="">Garry Kasparov</p><!----><p _ngcontent-sc43="" class="caption subtitle ng-tns-c43-4 ng-star-inserted" style="">former World Chess Champion</p><!----><!----><!----><!----></div><!----></div></dm-content-card><dm-multiple-shapes _ngcontent-sc43="" class="ng-tns-c43-4 overflow hide-on-mobile" _nghost-sc21=""><!----><!----><!----><!----></dm-multiple-shapes></dm-quote-promo><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content">
+
+<div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text"><p>The first thing that players will notice is AlphaZero's style, says Matthew Sadler – “the way its pieces swarm around the opponent’s king with purpose and power”. Underpinning that, he says, is AlphaZero’s highly dynamic game play that maximises the activity and mobility of its own pieces while minimising the activity and mobility of its opponent’s pieces. Counterintuitively, AlphaZero also seems to place less value on “material”, an idea that underpins the modern game where each piece has a value and if one player has a greater value of pieces on the board than the other, then they have a material advantage. Instead, AlphaZero is willing to sacrifice material early in a game for gains that will only be recouped in the long-term.</p></div>
+</div>
+
+</div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content">
+
+<div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text"><p>“Impressively, it manages to impose its style of play across a very wide range of positions and openings,” says Matthew, who also observes that it plays in a very deliberate style from its first move with a “very human sense of consistent purpose”.</p><p>“Traditional engines are exceptionally strong and make few obvious mistakes, but can drift when faced with positions with no concrete and calculable solution,” he says. “It's precisely in such positions where ‘feeling’, ‘insight’ or ‘intuition’ is required that AlphaZero comes into its own."</p></div>
+</div>
+
+</div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-quote-promo _nghost-sc43="" class="ng-tns-c43-5 ng-trigger ng-trigger-animateIn ng-animate-disabled ng-star-inserted" id="" colour-theme="" style="transform:translateX(0px);opacity:0;"><dm-content-card _ngcontent-sc43="" class="" _nghost-sc24=""><!----><!----><!----><!----><div _ngcontent-sc24="" class="content-card-body"><div _ngcontent-sc43="" class="content-wrapper ng-tns-c43-5"><blockquote _ngcontent-sc43="" class="ng-tns-c43-5"><svg _ngcontent-sc43="" class="ng-tns-c43-5" role="img"><use _ngcontent-sc43="" class="ng-tns-c43-5" xlink:href="#open-quote"></use></svg><!----><h4 _ngcontent-sc43="" class="dm-h4 ng-tns-c43-5 ng-star-inserted" style="">The implications go far beyond my beloved chessboard... Not only do these self-taught expert machines perform incredibly well, but we can actually learn from the new knowledge they produce."</h4><!----></blockquote><!----><!----><!----><!----><p _ngcontent-sc43="" class="caption title ng-tns-c43-5 ng-star-inserted" style="">Garry Kasparov</p><!----><p _ngcontent-sc43="" class="caption subtitle ng-tns-c43-5 ng-star-inserted" style="">former World Chess Champion</p><!----><!----><!----><!----></div><!----></div></dm-content-card><dm-multiple-shapes _ngcontent-sc43="" class="ng-tns-c43-5 overflow hide-on-mobile" _nghost-sc21=""><!----><!----><!----><!----></dm-multiple-shapes></dm-quote-promo><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content"><div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text">
+<p>This unique ability, not seen in other traditional chess engines, has already been harnessed to give chess fans&nbsp;<a href="https://chess24.com/en/read/news/alphazero-on-carlsen-caruana-games-1-8">fresh insight and commentary</a>&nbsp;on the recent<a href="https://worldchess.com/">&nbsp;World Chess Championship</a>&nbsp;match between<a href="https://en.wikipedia.org/wiki/Magnus_Carlsen">&nbsp;Magnus Carlsen</a>&nbsp;and<a href="https://en.wikipedia.org/wiki/Fabiano_Caruana">&nbsp;Fabiano Caruana</a>&nbsp;and will be explored further in&nbsp;<a href="https://www.newinchess.com/game-changer">Game Changer</a>. “It was fascinating to see how AlphaZero's analysis differed from that of top chess engines and even top grandmaster play,” says Natasha Regan. "AlphaZero could be a powerful teaching tool for the whole community."</p>
+<p>AlphaZero’s teachings echo what we saw when&nbsp;<a href="../../../../../../../research/case-studies/alphago-the-story-so-far">AlphaGo</a>&nbsp;played the legendary champion&nbsp;<a href="https://en.wikipedia.org/wiki/Lee_Sedol">Lee Sedol</a>&nbsp;in 2016. During&nbsp;<a href="../../../../../../../alphago-korea">the games</a>, AlphaGo played a number of&nbsp;<a href="../../../../../../../blog/article/innovations-alphago">highly inventive winning moves,</a>&nbsp;including move 37 in game two, which overturned hundreds of years of thinking. These moves - and many others - have since been studied by players at all levels including Lee Sedol himself, who said of Move 37: “I thought AlphaGo was based on probability calculation and it was merely a machine. But when I saw this move I changed my mind. Surely AlphaGo is creative.”</p>
+</div>
+</div></div></dm-body-text><!----></dm-component-factory><dm-component-factory _ngcontent-sc52="" _nghost-sc11="" class="ng-star-inserted"><!----><dm-body-text _nghost-sc45="" id="" colour-theme="" class="ng-star-inserted"><div _ngcontent-sc45="" class="dm-section user-content"><div class="g-sm-col-4 g-lg-col-7 g-lg-push-1">
+<div class="rich-text">
+<p>As with Go, we are excited about AlphaZero’s creative response to chess, which has been a grand challenge for artificial intelligence since the dawn of the computing age with early pioneers including Babbage, Turing, Shannon, and von Neumann all trying their hand at designing chess programs. But AlphaZero is about more than chess, shogi or Go. To create intelligent systems capable of solving a wide range of real-world problems we need them to be flexible and generalise to new situations. While there has been some progress towards this goal, it remains a major challenge in AI research with systems capable of mastering specific skills to a very high standard, but often failing when presented with even slightly modified tasks.</p>
+<p>AlphaZero’s ability to master three different complex games – and potentially any perfect information game – is an important step towards overcoming this problem. It demonstrates that a single algorithm can learn how to discover new knowledge in a range of settings. And, while it is still early days, AlphaZero’s creative insights coupled with the encouraging results we see in other projects such as <a href="https://deepmind.com/blog/alphafold/">AlphaFold</a>, &nbsp;give us confidence in <a href="https://deepmind.com/about/">our mission</a> to create general purpose learning systems that will one day help us find novel solutions to some of the most important and complex scientific problems.</p>
+<hr>
+<ul>
+<li>Read <a href="http://science.sciencemag.org/cgi/content/full/362/6419/1140?ijkey=XGd77kI6W4rSc&amp;keytype=ref&amp;siteid=sci">the paper in Science</a></li>
+<li>Download an <a href="https://kstatic.googleusercontent.com/files/2f51b2a749a284c2e2dfa13911da965f4855092a179469aedd15fbe4efe8f8cbf9c515ef83ac03a6515fa990e6f85fd827dcd477845e806f23a17845072dc7bd">Open Access version of the paper</a> [PDF]</li>
+<li>Read the accompanying <a href="http://science.sciencemag.org/content/362/6419/1087">Science editorial</a>&nbsp;by Garry Kasparov</li>
+<li>Read the <a href="http://science.sciencemag.org/content/362/6419/1118">accompanying Perspective article</a>&nbsp;in Science by Deep Blue co-creator Murray Campbell</li>
+<li>Download <a href="https://kstatic.googleusercontent.com/files/2991ebada4051da090d44e6904d45201fc30f5273d80b0500b4830a721b8400d8d1e2e06f09785979c5398a2fc0ff8969cf61c90c30c91adebd7eb40db63bb8a">the top 20 AlphaZero-Stockfish games chosen by Grandmaster Matthew Sadler</a>&nbsp;[.zip]</li>
+<li>Download <a href="https://kstatic.googleusercontent.com/files/cdf7d7e5ea47a53c08a8e6606a6ef3933ffa768546dca6dbb138b4a19b2fc25f0347f69c615ab31ae5da9fc888712f108cd2624acfffbb15bcbc3ca2943105ae">the top 10 AlphaZero-Elmo games chosen by shogi Master&nbsp;Yoshiharu Habu</a> [.zip]</li>
+<li>Download <a href="../research/alphago/alphazero-resources/">210 AlphaZero-Stockfish chess games&nbsp;and 100 AlphaZero-Elmo shogi games</a></li>
+<li>Download the <a href="https://kstatic.googleusercontent.com/files/d1fbc739d68a063d67b891ad4725c72dbb94e62ed54185f4a24012b44971d31279f347b3638e7a0b980791023297366715affaf3155aea5bb064730bb7ec233e">accompanying artwork</a></li>
+<li>Find out more about the AlphaZero book <a href="https://www.newinchess.com/game-changer">Game Changer</a> (New in Chess, January 2019)</li>
+</ul>
+<p><strong><em>This work was done by David Silver, Thomas Hubert, Julian Schrittwieser, Ioannis Antonoglou, Matthew Lai, Arthur Guez, Marc Lanctot, Laurent Sifre, Dharshan Kumaran, Thore Graepel, Timothy Lillicrap, Karen Simonyan, and Demis Hassabis.</em></strong></p>
+</div>
+</div></div></dm-body-text><!----></dm-component-factory><!----></div></div></div><!----><div _ngcontent-sc52="" class="promos-wrapper ng-star-inserted"><!----><dm-footer-promos _ngcontent-sc52="" _nghost-sc19="" class="ng-star-inserted"><div _ngcontent-sc19="" class="dm-section footer-promos"><!----><h5 _ngcontent-sc19="" class="dm-h5 ng-star-inserted">Further reading</h5><div _ngcontent-sc19="" class="promo-wrapper"><!----><div _ngcontent-sc19="" class="footer-promo ng-star-inserted"><dm-component-factory _ngcontent-sc19="" _nghost-sc11=""><!----><dm-publication-card _nghost-sc41="" class="ng-tns-c41-6 ng-trigger ng-trigger-animateIn ng-star-inserted" id="" style="transform:translateX(0px);opacity:0;"><!----><dm-content-card _ngcontent-sc41="" _nghost-sc24="" class="ng-star-inserted" style=""><!----><!----><!----><!----><div _ngcontent-sc24="" class="content-card-body"><!----><div _ngcontent-sc41="" class="header ng-tns-c41-6"><svg _ngcontent-sc41="" class="ng-tns-c41-6" role="img"><use _ngcontent-sc41="" class="ng-tns-c41-6" xlink:href="#publication"></use></svg><div _ngcontent-sc41="" class="category"><!----><p _ngcontent-sc41="" class="caption title ng-tns-c41-6 ng-star-inserted"> Publication <!----></p><!----><!----></div></div><div _ngcontent-sc41="" class="body ng-tns-c41-6"><h4 _ngcontent-sc41="" class="dm-h4"><a _ngcontent-sc41="" class="ng-tns-c41-6" href="/research/publications/2022/Measuring-CLEVRness-Black-box-Testing-of-Visual-Reasoning-Models"> Measuring CLEVRness: Black-box Testing of Visual Reasoning Models </a></h4><address _ngcontent-sc41="" class="ng-tns-c41-6"><!----><p _ngcontent-sc41="" class="medium ng-tns-c41-6 ng-star-inserted"> S Mouselinos, H Michalewski, <!----><span _ngcontent-sc41="" class="ng-tns-c41-6 ng-star-inserted"> et al. </span> ICLR <time _ngcontent-sc41="" class="ng-tns-c41-6" datetime="April 25, 2022"> 2022 </time></p></address></div><div _ngcontent-sc41="" class="footer ng-tns-c41-6"><!----><!----><button _ngcontent-sc41="" class="dm-cta icon flat info ng-tns-c41-6 ng-star-inserted" role="button" aria-label="How can we measure the reasoning capabilities of intelligence systems? Visual question answering..."><svg _ngcontent-sc41="" class="ng-tns-c41-6" role="img"><use _ngcontent-sc41="" class="ng-tns-c41-6" xlink:href="#info-mono"></use></svg></button><!----><!----><a _ngcontent-sc41="" class="dm-cta pill flat caption thin ng-tns-c41-6 ng-star-inserted" rel="noopener" target="_blank" href="https://openreview.net/pdf?id=UtGtoS4CYU"><svg _ngcontent-sc41="" class="ng-tns-c41-6" role="img"><use _ngcontent-sc41="" class="ng-tns-c41-6" xlink:href="#download"></use></svg><!----><!----> Download </a><a _ngcontent-sc41="" class="dm-cta link" aria-label="Measuring CLEVRness: Black-box Testing of Visual Reasoning Models" href="/research/publications/2022/Measuring-CLEVRness-Black-box-Testing-of-Visual-Reasoning-Models"><svg _ngcontent-sc41="" class="ng-tns-c41-6" role="img"><use _ngcontent-sc41="" class="ng-tns-c41-6" xlink:href="#read-more"></use></svg></a></div><!----><!----></div></dm-content-card></dm-publication-card><!----></dm-component-factory></div><div _ngcontent-sc19="" class="footer-promo ng-star-inserted"><dm-component-factory _ngcontent-sc19="" _nghost-sc11=""><!----><dm-open-source-card _nghost-sc40="" class="ng-tns-c40-7 ng-trigger ng-trigger-animateIn ng-star-inserted" id="" style="transform:translateX(0px);opacity:0;"><dm-content-card _ngcontent-sc40="" class="" colour-theme="ink_dark" _nghost-sc24=""><!----><!----><!----><!----><div _ngcontent-sc24="" class="content-card-body"><div _ngcontent-sc40="" class="header ng-tns-c40-7"><svg _ngcontent-sc40="" class="ng-tns-c40-7" role="img"><use _ngcontent-sc40="" class="ng-tns-c40-7" xlink:href="#open-source"></use></svg><div _ngcontent-sc40="" class="category"><p _ngcontent-sc40="" class="caption title">Open Source</p><!----></div></div><div _ngcontent-sc40="" class="body ng-tns-c40-7"><h4 _ngcontent-sc40="" class="dm-h4-mono"><a _ngcontent-sc40="" class="ng-tns-c40-7" href="/research/open-source/Self-Supervised-Learning-with-Kernel-Dependence-Maximization"> Self-Supervised Learning with Kernel Dependence Maximization </a></h4><p _ngcontent-sc40="" class="medium"></p></div><div _ngcontent-sc40="" class="footer ng-tns-c40-7"><a _ngcontent-sc40="" class="dm-cta link" aria-label="Self-Supervised Learning with Kernel Dependence Maximization" href="/research/open-source/Self-Supervised-Learning-with-Kernel-Dependence-Maximization"><svg _ngcontent-sc40="" class="ng-tns-c40-7" role="img"><use _ngcontent-sc40="" class="ng-tns-c40-7" xlink:href="#read-more"></use></svg></a></div><!----><!----></div></dm-content-card></dm-open-source-card><!----></dm-component-factory></div></div></div></dm-footer-promos></div><!----><!----></dm-blog-article-page><!----></dm-component-factory></dm-page-loader><div _ngcontent-sc0="" class="svg-elements"></div><dm-footer _ngcontent-sc0="" _nghost-sc3=""><!----><!----><footer _ngcontent-sc3="" colour-theme="ink_dark" class="ng-star-inserted"><div _ngcontent-sc3="" class="body-wrapper dm-section"><div _ngcontent-sc3="" class="logo"><a _ngcontent-sc3="" aria-label="Home page" class="dm-cta" routerlink="/" href="/"><svg _ngcontent-sc3="" role="img"><use _ngcontent-sc3="" xlink:href="#deepmind-logo-text"></use></svg></a></div><div _ngcontent-sc3="" class="body"><!----><div _ngcontent-sc3="" class="categories ng-star-inserted"><!----><div _ngcontent-sc3="" class="column ng-star-inserted"><!----><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/about"> About </a><ul _ngcontent-sc3=""><!----><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/about#our_story"> Our story </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/about#recent_progress"> Recent progress </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/about#our_global_community"> Our global community </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/about#leadership"> Leadership </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/about#teams"> Teams </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/about#access_to_science"> Access to science </a><!----></li></ul></div><div _ngcontent-sc3="" class="column ng-star-inserted"><!----><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/research"> Research </a><ul _ngcontent-sc3=""><!----><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/research?filters_and=%7B&quot;collection&quot;:%5B&quot;Publications&quot;%5D%7D"> Publications </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/research?filters_and=%7B&quot;author_notes&quot;:true,&quot;collection&quot;:%5B&quot;Publications&quot;%5D%7D"> Authors' notes </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/research?filters_and=%7B&quot;collection&quot;:%5B&quot;OpenSource&quot;%5D%7D"> Open source </a><!----></li></ul></div><div _ngcontent-sc3="" class="column ng-star-inserted"><!----><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/impact"> Impact </a><ul _ngcontent-sc3=""><!----><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/impact#real_world_impact"> Real-world impact </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/impact#significant_breakthroughs"> Significant breakthroughs </a><!----></li></ul></div><div _ngcontent-sc3="" class="column ng-star-inserted"><!----><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/blog"> Blog </a><ul _ngcontent-sc3=""><!----><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/blog?filters_and=%7B&quot;category&quot;:%5B&quot;Research&quot;%5D%7D"> Research </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/blog?filters_and=%7B&quot;collection&quot;:%5B&quot;Announcements&quot;%5D%7D"> News </a><!----></li></ul></div><div _ngcontent-sc3="" class="column ng-star-inserted"><!----><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/safety-and-ethics"> Safety &amp; Ethics </a><ul _ngcontent-sc3=""><!----><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/safety-and-ethics#overview"> Overview </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/safety-and-ethics#technical_safety"> Technical safety </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/safety-and-ethics#ethics_society"> Ethics &amp; Society </a><!----></li></ul></div><div _ngcontent-sc3="" class="column ng-star-inserted"><!----><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/careers"> Careers </a><ul _ngcontent-sc3=""><!----><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/careers/jobs"> Search open roles </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/careers#a_unique_mission"> A unique mission </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/careers#teams"> Teams </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/careers#diversity_matters"> Diversity matters </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/careers#locations"> Locations </a><!----></li><li _ngcontent-sc3="" class="ng-star-inserted"><!----><a _ngcontent-sc3="" class="nav-cta ng-star-inserted" href="/careers#internships"> Internships </a><!----></li></ul></div></div><!----><div _ngcontent-sc3="" class="back-to-top"><svg _ngcontent-sc3="" role="img"><use _ngcontent-sc3="" xlink:href="#arrow"></use></svg></div><div _ngcontent-sc3="" class="information"><div _ngcontent-sc3="" class="legal"><!----><dm-link _ngcontent-sc3="" classlist="dm-cta caption" _nghost-sc8="" class="ng-star-inserted"><!----><!----><a _ngcontent-sc8="" aria-label="Read more on an external page" class="external dm-cta caption ng-star-inserted" rel="noopener" target="_blank" href="mailto:press@deepmind.com"><!----><!----><!----><span _ngcontent-sc8="" class="ng-star-inserted">Press</span><!----><!----><!----></a><!----><!----><!----></dm-link><dm-link _ngcontent-sc3="" classlist="dm-cta caption" _nghost-sc8="" class="ng-star-inserted"><!----><!----><a _ngcontent-sc8="" aria-label="Read more on DeepMind" class="dm-cta caption ng-star-inserted" href="/terms-and-conditions"><!----><!----><!----><span _ngcontent-sc8="" class="ng-star-inserted">Terms &amp; Conditions</span><!----><!----><!----></a><!----><!----></dm-link><dm-link _ngcontent-sc3="" classlist="dm-cta caption" _nghost-sc8="" class="ng-star-inserted"><!----><!----><a _ngcontent-sc8="" aria-label="Read more on DeepMind" class="dm-cta caption ng-star-inserted" href="/privacy-policy"><!----><!----><!----><span _ngcontent-sc8="" class="ng-star-inserted">Privacy Policy</span><!----><!----><!----></a><!----><!----></dm-link><dm-link _ngcontent-sc3="" classlist="dm-cta caption" _nghost-sc8="" class="ng-star-inserted"><!----><!----><a _ngcontent-sc8="" aria-label="Read more on an external page" class="external dm-cta caption ng-star-inserted" rel="noopener" target="_blank" href="https://www.gstatic.com/gumdrop/sustainability/2020-google-modern-slavery-statement.pdf"><!----><!----><!----><span _ngcontent-sc8="" class="ng-star-inserted">Modern Slavery Statement</span><!----><!----><!----></a><!----><!----><!----></dm-link><dm-link _ngcontent-sc3="" classlist="dm-cta caption" _nghost-sc8="" class="ng-star-inserted"><!----><!----><a _ngcontent-sc8="" aria-label="Read more on an external page" class="external dm-cta caption ng-star-inserted" rel="noopener" target="_blank" href="https://abc.xyz/"><!----><!----><!----><span _ngcontent-sc8="" class="ng-star-inserted">Alphabet Inc</span><!----><!----><!----></a><!----><!----><!----></dm-link></div><ul _ngcontent-sc3="" class="social"><!----><li _ngcontent-sc3="" class="ng-star-inserted"><a _ngcontent-sc3="" class="nav-cta icon" rel="noopener" target="_blank" aria-label="Follow us on Twitter!" href="https://twitter.com/DeepMind"><svg _ngcontent-sc3="" role="img"><use _ngcontent-sc3="" xlink:href="#twitter"></use></svg></a></li><li _ngcontent-sc3="" class="ng-star-inserted"><a _ngcontent-sc3="" class="nav-cta icon" rel="noopener" target="_blank" aria-label="Follow us on Youtube!" href="https://www.youtube.com/deepmind"><svg _ngcontent-sc3="" role="img"><use _ngcontent-sc3="" xlink:href="#youtube"></use></svg></a></li><li _ngcontent-sc3="" class="ng-star-inserted"><a _ngcontent-sc3="" class="nav-cta icon" rel="noopener" target="_blank" aria-label="Follow us on LinkedIn!" href="https://www.linkedin.com/company/deepmind/"><svg _ngcontent-sc3="" role="img"><use _ngcontent-sc3="" xlink:href="#linkedin"></use></svg></a></li></ul></div></div><dm-shape _ngcontent-sc3="" _nghost-sc9=""></dm-shape></div></footer></dm-footer></div></dm-app-root>
+<script src="runtime-es2015.858f8dd898b75fe86926.js" type="module" crossorigin="use-credentials"></script><script src="polyfills-es2015.5e797a872a898fd68db7.js" type="module" crossorigin="use-credentials"></script><script src="runtime-es5.741402d1d47331ce975c.js" nomodule=""></script><script src="polyfills-es5.a490a7cc21e42cc78efe.js" nomodule=""></script><script src="scripts.3ec7c489ebfb22f76be0.js"></script><script src="main-es2015.fc6e6906ec88b3398713.js" type="module" crossorigin="use-credentials"></script><script src="main-es5.dbcab90595e2ef297a7b.js" nomodule=""></script>
+
+</body></html>
